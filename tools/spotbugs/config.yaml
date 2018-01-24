@@ -1,0 +1,28 @@
+spotbugs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "SpotBugs is a program which uses static analysis to look for bugs in Java code."
+  docker: "appsecpipeline/sast"
+  url: https://spotbugs.github.io/
+  documentation: http://spotbugs-in-kengo-toda.readthedocs.io/en/latest/index.html
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    parameters: "COMPILE_LOC : Location of jar file. LOC=/temp/jar"
+    pre:
+    exec: "spotbugs -textui"
+    shell: False
+    post:
+    report: "-xml -output {reportname} $COMPILE_LOC"
+    reportname: "{timestamp}.xml"
+    junit:
+  languages:
+    - "java"
+  profiles:
+    #Runs the full bandit scan
+    all: "-effort:max"

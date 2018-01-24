@@ -1,0 +1,26 @@
+cloc:
+  tags:
+    - "Static Code Analyzer"
+  type: "code-analyzer"
+  version: AppSecPipeline 0.5.0
+  icon-sm:
+  icon-lg:
+  description: "cloc counts blank lines, comment lines, and physical lines of source code in many programming languages."
+  url: https://github.com/AlDanial/cloc
+  documentation: https://github.com/AlDanial/cloc
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    parameters: "LOC : File or folder location of source code to examine. LOC=/temp/code"
+    pre:
+    exec: "cloc"
+    report: "--report-file={reportname}"
+    reportname: "languages.json"
+    post: "cat {reportname}"
+    junit:
+  profiles:
+    all: "$LOC --json"

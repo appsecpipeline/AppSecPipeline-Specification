@@ -1,0 +1,31 @@
+bandit:
+  version: AppSecPipeline 0.5.0
+  tool-version: 
+  name: bandit
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "Bandit is a tool designed to find common security issues in Python code. To do this Bandit processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes. Once Bandit has finished scanning all the files it generates a report."
+  docker: "appsecpipeline/base-tools:latest"
+  url: https://wiki.openstack.org/wiki/Security/Projects/Bandit
+  documentation: https://docs.openstack.org/bandit/latest/index.html
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    pre:
+    exec: "bandit"
+    shell: True
+    report: "-f csv -o {reportname}"
+    reportname: "{timestamp}.csv"
+    post: "python /usr/bin/appsecpipeline/tools/bandit/parser.py -f {reportname}"
+    junit: "junit.py -f {reportname} -t bandit"
+  languages:
+    - "python"
+  profiles:
+    #Runs the full bandit scan
+    all: "-r $LOC"
+    #Only the issues that are the highest severity and the highest confidence
+    tuned: "-lll -iii -r $LOC"

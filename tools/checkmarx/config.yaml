@@ -1,0 +1,61 @@
+checkmarx:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Scanner"
+  type: "static"
+  name: "checkmarx"
+  icon-sm:
+  icon-lg:
+  description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
+  url: https://www.checkmarx.com/technology/static-code-analysis-sca/
+  documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
+  docker: appsecpipeline/base
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    CHECKMARX_PROJECT:
+      type: runtime
+      data_type: int
+      description: "Checkmarx Project ID"
+    CHECKMARX_URL:
+      type: config
+      data_type: url
+      description: "Checkmarx web URL."
+    CHECKMARX_USERNAME:
+      type: config
+      data_type: username
+      description: "Checkmarx username."
+    CHECKMARX_PASSWORD:
+      type: config
+      data_type: password
+      description: "Checkmarx password."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/checkmarx/ScanProject.py --url $CHECKMARX_URL --username $CHECKMARX_USERNAME --password $CHECKMARX_PASSWORD --project=$CHECKMARX_PROJECT --source=$LOC"
+    shell: False
+    report: "--report {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  languages:
+    - "ruby"
+    - "java"
+    - "c#.net"
+    - "php"
+    - "python"
+    - "groovy"
+    - "android"
+    - "ios"
+    - "html5"
+    - "c++"
+    - "vb.net"
+    - "vb"
+    - "pl/sql"
+    - "perl"
+    - "apex"
+    - "scala"
+    - "swift"
+  profiles:
+    all: " "

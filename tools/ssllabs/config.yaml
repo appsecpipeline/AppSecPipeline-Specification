@@ -1,0 +1,31 @@
+ssllabs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "server"
+  icon-sm:
+  icon-lg:
+  description: "This tool is a command-line client for the SSL Labs APIs, designed for automated and/or bulk testing."
+  url: https://github.com/ssllabs/ssllabs-scan
+  documentation: https://sourceforge.net/p/ssllabs/mailman/ssllabs-devel/
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "ssllabs-scan"
+    shell: True
+    report: "> {reportname}"
+    reportname: "{timestamp}.json"
+    post: "python /usr/bin/appsecpipeline/tools/ssllabs/parser.py -f '{reportname}'"
+    junit:
+  credentials:
+    simple:
+  profiles:
+    all: "-usecache -verbosity=DEBUG $URL"
+    quick: " "
+    grade: "-usecache -grade $URL"

@@ -1,0 +1,49 @@
+version: AppSecPipeline 0.5.0
+
+#Sample appsec.pipeline file that could reside in an app repo
+profiles:
+  production:
+   - tool: "nmap"
+     profile: "all"
+   - tool: "zap"
+     profile: "quick"
+   - tool: "ssllabs"
+     profile: "all"
+   - tool: "defectdojo"
+     profile: "all"
+
+  dynamic:
+   - tool: "nikto"
+     profile: "tuned"
+   - tool: "arachni"
+     profile: "xss"
+   - tool: "defectdojo"
+     profile: "all"
+
+  static:
+   - tool: "cloc"
+     profile: "all"
+   - tool: "bandit"
+     profile: "tuned"
+   - tool: "brakeman"
+     profile: "tuned"
+   - tool: "retirejs"
+     profile: "all"
+     finding-severity: #Only import issues from retireJs with a severity of Critical
+       - "Critical"
+   - tool: "snyk"
+     profile: "all"
+   - tool: "dependency-check"
+     profile: "all"
+   - tool: "defectdojo"
+     profile: "all"
+
+  analyze-code:
+   - tool: "cloc"
+     profile: "all"
+
+#Define which profile to run based off of a code checkin
+deployment:
+  master: fast
+  devel: sast
+  pre-prod: standard

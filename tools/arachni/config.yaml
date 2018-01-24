@@ -1,0 +1,54 @@
+arachni:
+  version: AppSecPipeline 0.5.0
+  tool-version:
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "Arachni is a feature-full, modular, high-performance Ruby framework aimed towards helping penetration testers and administrators evaluate the security of modern web applications."
+  url: http://www.arachni-scanner.com/
+  documentation: https://github.com/Arachni/arachni/wiki/Command-line-user-interface
+  docker: "appsecpipeline/base-tools:latest"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of host to scan."
+    LOGIN_URL:
+      type: runtime
+      data_type: url
+      description: "Login URL of host to scan."
+    LOGIN_PARMS:
+      type: runtime
+      data_type: string
+      description: "Login paramaters in the format of username=user&password=password."
+    LOGIN_SUCCESS:
+      type: runtime
+      data_type: string
+      description: "Succesful login text to match on."
+    LOGIN_LOGOUT_PATTERN:
+      type: runtime
+      data_type: string
+      description: "Logout text to avoid."
+  commands:
+    pre:
+    exec: "arachni $URL"
+    shell: True
+    report: "--report-save-path={reportname}"
+    reportname: "{timestamp}.afr"
+    post: "arachni_reporter {reportname} --reporter=json:outfile={reportname}.json"
+    junit:
+  credentials:
+    simple: --plugin=autologin:url=$LOGIN_URL,parameters="$LOGIN_PARMS",check="$LOGIN_SUCCESS" --scope-exclude-pattern=$LOGIN_LOGOUT_PATTERN
+  profiles:
+    all: ""
+    active: "--checks=active/*"
+    passive: "--checks=passive/*"
+    fast: "--audit-forms --checks=xss --scope-page-limit=1"
+    file_upload: "--checks=form_upload"
+    xss: "--checks=xss"
+    remote: "--checks=file_inclusion"
+    command_exec: "--checks=os_cmd_injection"
+    sqli: "--checks=sql_injection"

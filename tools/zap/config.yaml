@@ -1,0 +1,46 @@
+zap:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools and is actively maintained by hundreds of international volunteers*. It can help you automatically find security vulnerabilities in your web applications while you are developing and testing your applications. Its also a great tool for experienced pentesters to use for manual security testing."
+  url: https://github.com/zaproxy/zaproxy
+  documentation: https://github.com/zaproxy/zaproxy/wiki
+  docker: "appsecpipeline/zap"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of host to scan."
+    LOGIN_URL:
+      type: runtime
+      data_type: url
+      description: "Login URL of host to scan."
+    LOGIN_PARMS:
+      type: runtime
+      data_type: string
+      description: "Login paramaters in the format of username=user&password=password."
+    LOGIN_SUCCESS:
+      type: runtime
+      data_type: string
+      description: "Succesful login text to match on."
+    LOGIN_LOGOUT_PATTERN:
+      type: runtime
+      data_type: string
+      description: "Logout text to avoid."
+  commands:
+    pre:
+    exec: "python /zap/zap-baseline.py -t $URL"
+    shell: False
+    report: "-x {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  credentials:
+    simple:
+  profiles:
+    all: ""
+    quick: " "

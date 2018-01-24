@@ -1,0 +1,60 @@
+appspider:
+  version: AppSecPipeline 0.5.0
+  tool-version: 3.8
+  tags:
+    - "Dynamic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "AppSpider automatically finds vulnerabilities across a wide range of applications from the relatively simple to the most complex—and it includes unique capabilities that enable teams to automate more of the security testing program across the entire software development lifecycle, from creation through production."
+  url: https://www.rapid7.com/products/appspider/
+  documentation: https://appspider.help.rapid7.com/docs/
+  docker: "appsecpipeline/base:latest"
+  parameters:
+    APPSPIDER_RUN_SCAN_POLL:
+      type: runtime
+      data_type: bool
+      description: "Wait for the scan to complete and specify the AppSpider profile."
+    APPSPIDER_CLIENT:
+      type: runtime
+      data_type: string
+      description: "AppSpider Client to use for connecting to the API."
+    APPSPIDER_URL:
+      type: config
+      data_type: url
+      description: "AppSpider Enterprise URL."
+    APPSPIDER_USERNAME:
+      type: config
+      data_type: username
+      description: "AppSpider API Username"
+    APPSPIDER_PASSWORD:
+      type: config
+      data_type: password
+      description: "AppSpider API Password"
+    APPSPIDER_ADMIN_USERNAME:
+      type: config
+      data_type: username
+      description: "AppSpider Admin API Username"
+    APPSPIDER_ADMIN_PASSWORD:
+      type: config
+      data_type: password
+      description: "AppSpider Admin API Password"
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/appspider/AppSpider.py --url $APPSPIDER_URL --username $APPSPIDER_USERNAME --password $APPSPIDER_PASSWORD --admin-username $APPSPIDER_ADMIN_USERNAME --admin-password $APPSPIDER_ADMIN_PASSWORD --client $APPSPIDER_CLIENT"
+    shell: False
+    report: "--output-file='{reportname}'"
+    reportname: "VulnerabilitiesSummary.xml"
+    post:
+    junit:
+  profiles:
+    all: "--run-scan-poll $APPSPIDER_RUN_SCAN_POLL"
+    active: "--checks=active/*"
+    passive: "--checks=passive/*"
+    fast: "--audit-forms --checks=xss --scope-page-limit=1"
+    file_upload: "--checks=form_upload"
+    xss: "--checks=xss"
+    remote: "--checks=file_inclusion"
+    command_exec: "--checks=os_cmd_injection"
+    sqli: "--checks=sql_injection"

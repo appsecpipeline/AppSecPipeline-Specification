@@ -1,0 +1,34 @@
+sudo: required
+language: python
+install: true
+
+services:
+  - docker
+
+env:
+  global:
+    - VERSION=1.${TRAVIS_BUILD_NUMBER}
+  matrix:
+    - PIPELINE_BUILD='base'
+      DOCKER_FILE='base/dockerfile-base'
+      REPO='appsecpipeline/base'
+    - PIPELINE_BUILD='basetools'
+      DOCKER_FILE='base/dockerfile-base-tools'
+      REPO='appsecpipeline/base-tools'
+    - PIPELINE_BUILD=sast
+      DOCKER_FILE='base/dockerfile-sast'
+      REPO='appsecpipeline/sast'
+    - PIPELINE_BUILD=node
+      DOCKER_FILE='base/dockerfile-node'
+      REPO='appsecpipeline/node'
+    - PIPELINE_BUILD=ruby
+      DOCKER_FILE='base/dockerfile-ruby'
+      REPO='appsecpipeline/ruby'
+    - PIPELINE_BUILD=zap
+      DOCKER_FILE='base/dockerfile-zap'
+      REPO='appsecpipeline/zap'
+
+script:
+  - |
+    echo "Running PipelineBuild=$PIPELINE_BUILD"
+    bash build/docker-hub.sh $TRAVIS_BRANCH $REPO $VERSION $DOCKER_FILE

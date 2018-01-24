@@ -1,0 +1,28 @@
+retirejs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Components with known Vulnerabilities"
+  type: "static"
+  description: "There is a plethora of JavaScript libraries for use on the Web and in Node.JS apps out there. This greatly simplifies development,but we need to stay up-to-date on security fixes. Using 'Components with Known Vulnerabilities' is now a part of the OWASP Top 10 list of security risks and insecure libraries can pose a huge risk to your Web app. The goal of Retire.js is to help you detect the use of JS-library versions with known vulnerabilities."
+  docker: "appsecpipeline/node"
+  url: https://retirejs.github.io/retire.js/
+  documentation: https://github.com/RetireJS/retire.js
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    pre:
+    exec: "retire"
+    shell: False
+    post:
+    report: "--outputpath {reportname} --outputformat json"
+    reportname: "{timestamp}.json"
+    junit:
+  languages:
+    - "javascript"
+    - "nodejs"
+  profiles:
+    #Runs the full dependency scan
+    all: "--path $LOC"

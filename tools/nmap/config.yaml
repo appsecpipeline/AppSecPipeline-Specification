@@ -1,0 +1,58 @@
+nmap:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "infrastructure"
+  icon-sm:
+  icon-lg:
+  description: "Nmap is a free and open source (license) utility for network discovery and security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts."
+  url: https://nmap.org/
+  documentation: https://nmap.org/book/man.html
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    TARGET:
+      type: runtime
+      data_type: host
+      description: "Target hostname of the site to scan."
+  commands:
+    pre:
+    exec: "nmap"
+    shell: False
+    report: "-oX {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  credentials:
+    simple:
+  profiles:
+    #Full handshake, fairly fast
+    intensive_evident: "-sT -p- -A -T4 $TARGET"
+    #Scans all TCP ports
+    all: "-p 1-65535 -T4 -A -v $TARGET"
+    #Default everything. Will issue a TCP SYN scan for the most common 1000 TCP ports, using ICMP Echo request (ping) for host detection.
+    regular: "$TARGET"
+    #scan the most common TCP ports. It will make an effort in determining the OS type and what services and their versions are running.
+    intense: "-T4 -A -v $TARGET"
+    #Same as the intense scan and will also scan UDP ports (-sU)
+    intense_udp: "-sS -sU -T4 -A -v $TARGET"
+    #Do only a ping only on the target, no port scan.
+    ping: "-sn $TARGET"
+    #Limiting the number of TCP ports scanned to only the top 100 most common TCP ports
+    quick: "-T4 -F $TARGET"
+    #Version and OS detection
+    quick_light: "-sV -T4 -O -F –version-light $TARGET"
+    #determine hosts and routers in a network scan. It will traceroute and ping all hosts defined in the target.
+    traceroute: "-sn –traceroute $TARGET"
+    #Intense scan plus UDP, highly intrusive and very slow
+    comprehensive: "-sS -sU -T4 -A -v -PE -PP -PS80,443 -PA3389 -PU40125 -PY -g 53 -script \"default or (discovery and safe)\" $TARGET"
+    #SYN scan
+    syn: "–sS $TARGET"
+    #UDP scan
+    udp: "–sU $TARGET"
+    #SCTP INIT Scan, Like SYN scan, INIT scan is relatively unobtrusive and stealthy, since it never completes SCTP associations.
+    sctp: "–sY $TARGET"
+    #TCP Window Scan, exactly the same as ACK scan, except that it exploits an implementation detail of certain systems to differentiate open ports from closed ones, rather than always printing unfiltered when an RST is returned.
+    windows: "–sW $TARGET"
+    #Stealth scan
+    stealth: "-sS -p- -T2 $TARGET"

@@ -1,0 +1,33 @@
+snyk:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
+  docker: "appsecpipeline/node"
+  url: https://snyk.io/
+  documentation: https://snyk.io/docs/
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    SNYK_API_TOKEN:
+      type: config
+      data_type: api
+      description: "Synk API token"
+  commands:
+    pre: "snyk auth $SNYK_API_TOKEN"
+    exec: "snyk"
+    shell: True
+    post:
+    report: "--json > {reportname}"
+    reportname: "{timestamp}.json"
+    junit:
+  languages:
+    - "ruby"
+    - "nodejs"
+    - "java"
+    - "python"
+  profiles:
+    all: "test ."

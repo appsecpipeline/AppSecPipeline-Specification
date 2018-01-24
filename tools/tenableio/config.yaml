@@ -1,0 +1,42 @@
+tenableio:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Infrastructure Scanner"
+  type: "infrastructure"
+  icon-sm:
+  icon-lg:
+  description: "Cloud-based Cyber Exposure platform for modern assets - from IT to cloud to IoT and OT."
+  url: https://www.tenable.com/products/tenable-io
+  documentation: https://docs.tenable.com/TenableIO.htm
+  docker: appsecpipeline/base-tools
+  parameters:
+    TARGET:
+      type: runtime
+      data_type: host
+      description: "Target hostname or ip address."
+    TENABLE_TEMPLATE:
+      type: runtime
+      data_type: string
+      description: "Tenable profile to run. (Defined in TenableIO)"
+    TENABLE_SCAN_NAME:
+      type: runtime
+      data_type: string
+      description: "Name of TenableIO scan."
+    TENABLE_ACCESS_KEY:
+      type:  config
+      data_type: key
+      description: "Access key, generated in the TenableIO GUI."
+    TENABLE_SECRET_KEY:
+      type: config
+      data_type: key
+      description: "Secret key, generated in the TenableIO GUI."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/tenableio/tenablescan.py --target $TARGET --access_key $TENABLE_ACCESS_KEY --secret_key $TENABLE_SECRET_KEY"
+    shell: False
+    report: "--report {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  profiles:
+    all: " "

@@ -1,0 +1,145 @@
+version: AppSecPipeline 0.6.0
+
+# Global configuration settings
+global:
+  min-severity: low
+  max-tool-run: 720 #Maximum time to run a tool before terminating the container, specified in minutes
+  max-parallel: 3 #Maximum number of concurrent docker containers to run per Pipeline
+  max-dynamic: 1 #Maximum number of dynamic containers to run at once
+
+#Profile definition of what tools to run for a particular application
+profiles:
+  sourcecode:
+    pipeline:
+      - tool: "git"
+        tool-profile: "tags"
+        on-failure: "fail" #continue / fail / tool?
+      - tool: "cloc"
+        tool-profile: "all"
+        on-failure:
+      - tool: "checkmarx"
+        tool-profile: "all"
+      - tool: "bandit"
+        tool-profile: "tuned"
+      - tool: "brakeman"
+        tool-profile: "tuned"
+      - tool: "retirejs"
+        tool-profile: "all"
+      - tool: "defectdojo"
+        tool-profile: "all"
+
+  gitcloc:
+    pipeline:
+      - tool: "git"
+        tool-profile: "clone"
+      - tool: "cloc"
+        tool-profile: "all"
+
+  standard:
+    pipeline:
+      - tool: "cloc"
+        tool-profile: "all"
+      - tool: "nikto"
+        tool-profile: "fast"
+      - tool: "arachni"
+        tool-profile: "xss"
+      - tool: "bandit"
+        tool-profile: "tuned"
+      - tool: "brakeman"
+        tool-profile: "tuned"
+      - tool: "retirejs"
+        tool-profile: "all"
+      - tool: "defectdojo"
+        tool-profile: "all"
+
+  production:
+    pipeline:
+      - tool: "zap"
+        tool-profile: "quick"
+      - tool: "nmap"
+        tool-profile: "quick"
+      - tool: "ssllabs"
+        tool-profile: "all"
+    startup:
+      tool: prepenv
+      tool-profile: all
+    runevery:
+      tool: defectdojo
+      tool-profile: engagement
+    final:
+      tool: defectdojo
+      tool-profile: close_engagement
+
+  ssllabs:
+    pipeline:
+     - tool: "ssllabs"
+       tool-profile: "all"
+
+  tenableio:
+    pipeline:
+     - tool: "tenableio"
+       tool-profile: "all"
+
+  wpscan:
+    pipeline:
+     - tool: "wpscan"
+       tool-profile: "all_enumeration"
+
+  nmap:
+    pipeline:
+     - tool: "nmap"
+       tool-profile: "quick"
+
+  defectdojonmap:
+    pipeline:
+     - tool: "nmap"
+       tool-profile: "quick"
+     - tool: "defectdojo"
+       tool-profile: "all"
+
+  appspider:
+    pipeline:
+     - tool: "appspider"
+       tool-profile: "all"
+
+  defectdojo:
+    pipeline:
+     - tool: "defectdojo"
+       tool-profile: "all"
+
+  dynamic:
+    pipeline:
+     - tool: "nikto"
+       tool-profile: "tuned"
+     - tool: "arachni"
+       tool-profile: "xss"
+     - tool: "defectdojo"
+       tool-profile: "all"
+
+  static:
+    pipeline:
+     - tool: "cloc"
+       tool-profile: "all"
+     - tool: "bandit"
+       tool-profile: "tuned"
+     - tool: "brakeman"
+       tool-profile: "tuned"
+     - tool: "retirejs"
+       tool-profile: "all"
+     - tool: "snyk"
+       tool-profile: "all"
+     - tool: "dependency-check"
+       tool-profile: "all"
+     - tool: "defectdojo"
+       tool-profile: "all"
+
+  analyze-code:
+    pipeline:
+     - tool: "cloc"
+       tool-profile: "all"
+
+#Define which profile to run based off of a code checkin
+deployment:
+  master: fast
+  devel: sast
+  pre-prod: standard

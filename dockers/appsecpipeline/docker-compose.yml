@@ -1,0 +1,38 @@
+version: "3"
+services:
+  bodgeit:
+    image: psiinon/bodgeit
+    ports:
+      - "9000:8080"
+    networks:
+      appsec:
+        aliases:
+          - bodgeit.appsec.pipeline
+  defectdojo:
+    image: appsecpipeline/django-defectdojo:latest
+    ports:
+      - "8000:8000"
+    networks:
+      appsec:
+        aliases:
+          - defectdojo.appsec.pipeline
+  jenkins-pipeline:
+    image: appsecpipeline/jenkins
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_home:/var/jenkins_home
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      appsec:
+        aliases:
+          - jenkins.appsec.pipeline
+
+networks:
+  appsec:
+      external:
+          name: appsecpipeline_default
+
+volumes:
+  jenkins_home:

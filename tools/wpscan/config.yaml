@@ -1,0 +1,29 @@
+wpscan:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "WPScan is a black box WordPress vulnerability scanner."
+  url: https://wpscan.org
+  documentation: https://github.com/wpscanteam/wpscan
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "wpscan --url $URL"
+    shell: True
+    report: "--format json --output {reportname}"
+    reportname: "{timestamp}.json"
+    post: "python /usr/bin/appsecpipeline/tools/wpscan/parser.py -f {reportname}"
+    junit:
+  profiles:
+    non_intrusive: "--detection-mode passive --random-user-agent"
+    plugins: "--enumerate p --random-user-agent"
+    all_enumeration: "--enumerate p --detection-mode mixed --random-user-agent"

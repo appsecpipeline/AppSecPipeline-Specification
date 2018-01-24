@@ -1,0 +1,37 @@
+nikto:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "Web server scanner which performs comprehensive tests against web servers for multiple items, including over 3500 potentially dangerous files/CGIs, versions on over 900 servers, and version specific problems on over 250 servers."
+  url: https://cirt.net/Nikto2
+  documentation: https://cirt.net/nikto2-docs/
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "nikto -h $URL"
+    report: "-output '{reportname}'"
+    reportname: "{timestamp}.xml"
+    post: "python /usr/bin/appsecpipeline/tools/nikto/parser.py -f '{reportname}'"
+    junit: "junit.py -f '{reportname}' -t nikto"
+  profiles:
+    all: ""
+    tuned: "-Tuning x 6"
+    fast: "-Plugins \"headers;report_xml\""
+    file_upload: "-Tuning 0"
+    misconfig: "-Tuning 2"
+    info: "-Tuning 3"
+    xss: "-Tuning 4"
+    remote: "-Tuning 57"
+    dos: "-Tuning 6"
+    command_exec: "-Tuning 8"
+    sqli: "-Tuning 9"
+    identification: "-Tuning b"

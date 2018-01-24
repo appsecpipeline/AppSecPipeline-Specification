@@ -1,0 +1,765 @@
+appspider:
+  version: AppSecPipeline 0.5.0
+  tool-version: 3.8
+  tags:
+    - "Dynamic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "AppSpider automatically finds vulnerabilities across a wide range of applications from the relatively simple to the most complex—and it includes unique capabilities that enable teams to automate more of the security testing program across the entire software development lifecycle, from creation through production."
+  url: https://www.rapid7.com/products/appspider/
+  documentation: https://appspider.help.rapid7.com/docs/
+  docker: "appsecpipeline/base:latest"
+  parameters:
+    APPSPIDER_RUN_SCAN_POLL:
+      type: runtime
+      data_type: bool
+      description: "Wait for the scan to complete and specify the AppSpider profile."
+    APPSPIDER_CLIENT:
+      type: runtime
+      data_type: string
+      description: "AppSpider Client to use for connecting to the API."
+    APPSPIDER_URL:
+      type: config
+      data_type: url
+      description: "AppSpider Enterprise URL."
+    APPSPIDER_USERNAME:
+      type: config
+      data_type: username
+      description: "AppSpider API Username"
+    APPSPIDER_PASSWORD:
+      type: config
+      data_type: password
+      description: "AppSpider API Password"
+    APPSPIDER_ADMIN_USERNAME:
+      type: config
+      data_type: username
+      description: "AppSpider Admin API Username"
+    APPSPIDER_ADMIN_PASSWORD:
+      type: config
+      data_type: password
+      description: "AppSpider Admin API Password"
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/appspider/AppSpider.py --url $APPSPIDER_URL --username $APPSPIDER_USERNAME --password $APPSPIDER_PASSWORD --admin-username $APPSPIDER_ADMIN_USERNAME --admin-password $APPSPIDER_ADMIN_PASSWORD --client $APPSPIDER_CLIENT"
+    shell: False
+    report: "--output-file='{reportname}'"
+    reportname: "VulnerabilitiesSummary.xml"
+    post:
+    junit:
+  profiles:
+    all: "--run-scan-poll $APPSPIDER_RUN_SCAN_POLL"
+    active: "--checks=active/*"
+    passive: "--checks=passive/*"
+    fast: "--audit-forms --checks=xss --scope-page-limit=1"
+    file_upload: "--checks=form_upload"
+    xss: "--checks=xss"
+    remote: "--checks=file_inclusion"
+    command_exec: "--checks=os_cmd_injection"
+    sqli: "--checks=sql_injection"
+arachni:
+  version: AppSecPipeline 0.5.0
+  tool-version:
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "Arachni is a feature-full, modular, high-performance Ruby framework aimed towards helping penetration testers and administrators evaluate the security of modern web applications."
+  url: http://www.arachni-scanner.com/
+  documentation: https://github.com/Arachni/arachni/wiki/Command-line-user-interface
+  docker: "appsecpipeline/base-tools:latest"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of host to scan."
+    LOGIN_URL:
+      type: runtime
+      data_type: url
+      description: "Login URL of host to scan."
+    LOGIN_PARMS:
+      type: runtime
+      data_type: string
+      description: "Login paramaters in the format of username=user&password=password."
+    LOGIN_SUCCESS:
+      type: runtime
+      data_type: string
+      description: "Succesful login text to match on."
+    LOGIN_LOGOUT_PATTERN:
+      type: runtime
+      data_type: string
+      description: "Logout text to avoid."
+  commands:
+    pre:
+    exec: "arachni $URL"
+    shell: True
+    report: "--report-save-path={reportname}"
+    reportname: "{timestamp}.afr"
+    post: "arachni_reporter {reportname} --reporter=json:outfile={reportname}.json"
+    junit:
+  credentials:
+    simple: --plugin=autologin:url=$LOGIN_URL,parameters="$LOGIN_PARMS",check="$LOGIN_SUCCESS" --scope-exclude-pattern=$LOGIN_LOGOUT_PATTERN
+  profiles:
+    all: ""
+    active: "--checks=active/*"
+    passive: "--checks=passive/*"
+    fast: "--audit-forms --checks=xss --scope-page-limit=1"
+    file_upload: "--checks=form_upload"
+    xss: "--checks=xss"
+    remote: "--checks=file_inclusion"
+    command_exec: "--checks=os_cmd_injection"
+    sqli: "--checks=sql_injection"
+bandit:
+  version: AppSecPipeline 0.5.0
+  tool-version: 
+  name: bandit
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "Bandit is a tool designed to find common security issues in Python code. To do this Bandit processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes. Once Bandit has finished scanning all the files it generates a report."
+  docker: "appsecpipeline/base-tools:latest"
+  url: https://wiki.openstack.org/wiki/Security/Projects/Bandit
+  documentation: https://docs.openstack.org/bandit/latest/index.html
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    pre:
+    exec: "bandit"
+    shell: True
+    report: "-f csv -o {reportname}"
+    reportname: "{timestamp}.csv"
+    post: "python /usr/bin/appsecpipeline/tools/bandit/parser.py -f {reportname}"
+    junit: "junit.py -f {reportname} -t bandit"
+  languages:
+    - "python"
+  profiles:
+    #Runs the full bandit scan
+    all: "-r $LOC"
+    #Only the issues that are the highest severity and the highest confidence
+    tuned: "-lll -iii -r $LOC"
+brakeman:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "Brakeman is an open source vulnerability scanner specifically designed for Ruby on Rails applications. It statically analyzes Rails application code to find security issues at any stage of development."
+  docker: "appsecpipeline/ruby:latest"
+  url: https://brakemanscanner.org/
+  documentation: https://brakemanscanner.org/docs/
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    pre:
+    exec: "brakeman -p $LOC --no-pager"
+    shell: False
+    post:
+    report: "-o {reportname}"
+    reportname: "{timestamp}.json"
+    junit:
+  languages:
+    - "ruby"
+  profiles:
+    #There are some checks which are not run by default. To run all checks, use
+    all: "-A"
+    #If Brakeman is running a bit slow, try
+    tuned: "--faster"
+checkmarx:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Scanner"
+  type: "static"
+  name: "checkmarx"
+  icon-sm:
+  icon-lg:
+  description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
+  url: https://www.checkmarx.com/technology/static-code-analysis-sca/
+  documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
+  docker: appsecpipeline/base
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    CHECKMARX_PROJECT:
+      type: runtime
+      data_type: int
+      description: "Checkmarx Project ID"
+    CHECKMARX_URL:
+      type: config
+      data_type: url
+      description: "Checkmarx web URL."
+    CHECKMARX_USERNAME:
+      type: config
+      data_type: username
+      description: "Checkmarx username."
+    CHECKMARX_PASSWORD:
+      type: config
+      data_type: password
+      description: "Checkmarx password."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/checkmarx/ScanProject.py --url $CHECKMARX_URL --username $CHECKMARX_USERNAME --password $CHECKMARX_PASSWORD --project=$CHECKMARX_PROJECT --source=$LOC"
+    shell: False
+    report: "--report {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  languages:
+    - "ruby"
+    - "java"
+    - "c#.net"
+    - "php"
+    - "python"
+    - "groovy"
+    - "android"
+    - "ios"
+    - "html5"
+    - "c++"
+    - "vb.net"
+    - "vb"
+    - "pl/sql"
+    - "perl"
+    - "apex"
+    - "scala"
+    - "swift"
+  profiles:
+    all: " "
+cloc:
+  tags:
+    - "Static Code Analyzer"
+  type: "code-analyzer"
+  version: AppSecPipeline 0.5.0
+  icon-sm:
+  icon-lg:
+  description: "cloc counts blank lines, comment lines, and physical lines of source code in many programming languages."
+  url: https://github.com/AlDanial/cloc
+  documentation: https://github.com/AlDanial/cloc
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    parameters: "LOC : File or folder location of source code to examine. LOC=/temp/code"
+    pre:
+    exec: "cloc"
+    report: "--report-file={reportname}"
+    reportname: "languages.json"
+    post: "cat {reportname}"
+    junit:
+  profiles:
+    all: "$LOC --json"
+defectdojo:
+  version: AppSecPipeline 0.5.0
+  name: DefectDojo
+  tags:
+    - "Vulnerability Management"
+    - "Report Consumer"
+  type: "collector"
+  description: "DefectDojo is a security program and vulnerability management tool. DefectDojo allows you to manage your application security program, maintain product and application information, schedule scans, triage vulnerabilities and push findings into defect trackers. Consolidate your findings into one source of truth with DefectDojo."
+  docker: "appsecpipeline/base-tools"
+  url: https://github.com/OWASP/django-DefectDojo
+  documentation: http://defectdojo.readthedocs.io/en/latest/
+  parameters:
+    DOJO_ENGAGEMENT_ID:
+      type: runtime
+      data_type: int
+      description: "Engagement id that exists in DefectDojo."
+    DOJO_DIR:
+      type: runtime
+      data_type: string
+      description: "Directory where the report reside in for importing into DefectDojo."
+    BUILD_ID:
+      type: runtime
+      data_type: string
+      description: "Build ID from upstream CI/CD."
+    DOJO_API_KEY:
+      type: config
+      data_type: key
+      description: "Dojo API key."
+    DOJO_HOST:
+      type: config
+      data_type: string
+      description: "DefectDojo host."
+    DOJO_PRODUCT_ID:
+      type: runtime
+      data_type: int
+      description: "DefectDojo product id."
+    DOJO_PROXY:
+      type: config
+      data_type: url
+      description: "Optional proxy for connecting to DefectDojo."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/defectdojo/dojo_ci_cd.py --dir=$DOJO_DIR --api_key=$DOJO_API_KEY --host=$DOJO_HOST --product=$DOJO_PRODUCT_ID"
+    shell: False
+    post:
+    report:
+    reportname:
+    junit:
+  profiles:
+    all: "--build_id=$BUILD_ID --closeengagement"
+    close_engagement: "--engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
+    engagement: "--engagement=$DOJO_ENGAGEMENT_ID"
+    all_proxy: "--proxy=$DOJO_PROXY --build_id=$BUILD_ID"
+dependency-check:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Components with known Vulnerabilities"
+  type: "static"
+  description: "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. Currently Java and .NET are supported; additional experimental support has been added for Ruby, Node.js, Python, and limited support for C/C++ build systems (autoconf and cmake)."
+  docker: "appsecpipeline/sast"
+  url: https://www.owasp.org/index.php/OWASP_Dependency_Check
+  documentation: https://jeremylong.github.io/DependencyCheck/
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    PROJECT:
+      type: runtime
+      data_type: string
+      description: "Name of the Dependency project."
+  commands:
+    pre:
+    exec: "/usr/bin/dependency-check/bin/dependency-check.sh"
+    shell: False
+    post:
+    report: "--out {reportname} --format XML"
+    reportname: "{timestamp}.xml"
+    junit:
+  languages:
+    - "java"
+    - "nodejs"
+    - "ruby"
+    - ".net"
+    - "python"
+  profiles:
+    #Runs the full dependency scan, only updates every week
+    all: "--project $PROJECT --scan $LOC --cveValidForHours 168"
+git:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Utility"
+  type: "utility"
+  description: "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency."
+  docker: "appsecpipeline/base"
+  url: https://git-scm.com/
+  documentation: https://git-scm.com/docs/git
+  parameters:
+    GIT_URL:
+      type: runtime
+      data_type: url
+      description: "URL of the source code repository."
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    GIT_TAGS:
+      type: runtime
+      data_type: string
+      description: "Checkout a specified tag."
+  commands:
+    pre:
+    exec: "sh git.sh"
+    shell: False
+    post:
+    report:
+    reportname:
+    junit:
+  profiles:
+    clone: "clone $GIT_URL $LOC"
+    tags: "$GIT_URL $LOC $GIT_TAGS"
+nikto:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "Web server scanner which performs comprehensive tests against web servers for multiple items, including over 3500 potentially dangerous files/CGIs, versions on over 900 servers, and version specific problems on over 250 servers."
+  url: https://cirt.net/Nikto2
+  documentation: https://cirt.net/nikto2-docs/
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "nikto -h $URL"
+    report: "-output '{reportname}'"
+    reportname: "{timestamp}.xml"
+    post: "python /usr/bin/appsecpipeline/tools/nikto/parser.py -f '{reportname}'"
+    junit: "junit.py -f '{reportname}' -t nikto"
+  profiles:
+    all: ""
+    tuned: "-Tuning x 6"
+    fast: "-Plugins \"headers;report_xml\""
+    file_upload: "-Tuning 0"
+    misconfig: "-Tuning 2"
+    info: "-Tuning 3"
+    xss: "-Tuning 4"
+    remote: "-Tuning 57"
+    dos: "-Tuning 6"
+    command_exec: "-Tuning 8"
+    sqli: "-Tuning 9"
+    identification: "-Tuning b"
+nmap:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "infrastructure"
+  icon-sm:
+  icon-lg:
+  description: "Nmap is a free and open source (license) utility for network discovery and security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts."
+  url: https://nmap.org/
+  documentation: https://nmap.org/book/man.html
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    TARGET:
+      type: runtime
+      data_type: host
+      description: "Target hostname of the site to scan."
+  commands:
+    pre:
+    exec: "nmap"
+    shell: False
+    report: "-oX {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  credentials:
+    simple:
+  profiles:
+    #Full handshake, fairly fast
+    intensive_evident: "-sT -p- -A -T4 $TARGET"
+    #Scans all TCP ports
+    all: "-p 1-65535 -T4 -A -v $TARGET"
+    #Default everything. Will issue a TCP SYN scan for the most common 1000 TCP ports, using ICMP Echo request (ping) for host detection.
+    regular: "$TARGET"
+    #scan the most common TCP ports. It will make an effort in determining the OS type and what services and their versions are running.
+    intense: "-T4 -A -v $TARGET"
+    #Same as the intense scan and will also scan UDP ports (-sU)
+    intense_udp: "-sS -sU -T4 -A -v $TARGET"
+    #Do only a ping only on the target, no port scan.
+    ping: "-sn $TARGET"
+    #Limiting the number of TCP ports scanned to only the top 100 most common TCP ports
+    quick: "-T4 -F $TARGET"
+    #Version and OS detection
+    quick_light: "-sV -T4 -O -F –version-light $TARGET"
+    #determine hosts and routers in a network scan. It will traceroute and ping all hosts defined in the target.
+    traceroute: "-sn –traceroute $TARGET"
+    #Intense scan plus UDP, highly intrusive and very slow
+    comprehensive: "-sS -sU -T4 -A -v -PE -PP -PS80,443 -PA3389 -PU40125 -PY -g 53 -script \"default or (discovery and safe)\" $TARGET"
+    #SYN scan
+    syn: "–sS $TARGET"
+    #UDP scan
+    udp: "–sU $TARGET"
+    #SCTP INIT Scan, Like SYN scan, INIT scan is relatively unobtrusive and stealthy, since it never completes SCTP associations.
+    sctp: "–sY $TARGET"
+    #TCP Window Scan, exactly the same as ACK scan, except that it exploits an implementation detail of certain systems to differentiate open ports from closed ones, rather than always printing unfiltered when an RST is returned.
+    windows: "–sW $TARGET"
+    #Stealth scan
+    stealth: "-sS -p- -T2 $TARGET"
+prepenv:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Utility"
+  type: "utility"
+  description: "AppSecPipeline Utility"
+  docker: "appsecpipeline/base"
+  url: https://github.com/OWASP/django-DefectDojo
+  documentation: http://defectdojo.readthedocs.io/en/latest/
+  parameters:
+    DOJO_ENGAGEMENT_ID:
+      type: runtime
+      data_type: int
+      description: "Engagement id that exists in DefectDojo."
+    DOJO_DIR:
+      type: runtime
+      data_type: string
+      description: "Directory where the report reside in for importing into DefectDojo."
+    BUILD_ID:
+      type: runtime
+      data_type: string
+      description: "Build ID from upstream CI/CD."
+    DOJO_API_KEY:
+      type: config
+      data_type: key
+      description: "Dojo API key."
+    DOJO_HOST:
+      type: config
+      data_type: string
+      description: "DefectDojo host."
+    DOJO_PRODUCT_ID:
+      type: runtime
+      data_type: int
+      description: "DefectDojo product id."
+    DOJO_PROXY:
+      type: config
+      data_type: url
+      description: "Optional proxy for connecting to DefectDojo."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/prepenv/prep_run.py --dir=$DOJO_DIR --api_key=$DOJO_API_KEY --host=$DOJO_HOST --product=$DOJO_PRODUCT_ID"
+    shell: False
+    post:
+    report:
+    reportname:
+    junit:
+  profiles:
+    all: "--build_id=$BUILD_ID"
+    close_engagement: "--engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
+    engagement: "--engagement=$DOJO_ENGAGEMENT_ID"
+    all_proxy: "--proxy=$DOJO_PROXY --build_id=$BUILD_ID"
+retirejs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Components with known Vulnerabilities"
+  type: "static"
+  description: "There is a plethora of JavaScript libraries for use on the Web and in Node.JS apps out there. This greatly simplifies development,but we need to stay up-to-date on security fixes. Using 'Components with Known Vulnerabilities' is now a part of the OWASP Top 10 list of security risks and insecure libraries can pose a huge risk to your Web app. The goal of Retire.js is to help you detect the use of JS-library versions with known vulnerabilities."
+  docker: "appsecpipeline/node"
+  url: https://retirejs.github.io/retire.js/
+  documentation: https://github.com/RetireJS/retire.js
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    pre:
+    exec: "retire"
+    shell: False
+    post:
+    report: "--outputpath {reportname} --outputformat json"
+    reportname: "{timestamp}.json"
+    junit:
+  languages:
+    - "javascript"
+    - "nodejs"
+  profiles:
+    #Runs the full dependency scan
+    all: "--path $LOC"
+snyk:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
+  docker: "appsecpipeline/node"
+  url: https://snyk.io/
+  documentation: https://snyk.io/docs/
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    SNYK_API_TOKEN:
+      type: config
+      data_type: api
+      description: "Synk API token"
+  commands:
+    pre: "snyk auth $SNYK_API_TOKEN"
+    exec: "snyk"
+    shell: True
+    post:
+    report: "--json > {reportname}"
+    reportname: "{timestamp}.json"
+    junit:
+  languages:
+    - "ruby"
+    - "nodejs"
+    - "java"
+    - "python"
+  profiles:
+    all: "test ."
+spotbugs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Static Code Analyzer"
+  type: "static"
+  description: "SpotBugs is a program which uses static analysis to look for bugs in Java code."
+  docker: "appsecpipeline/sast"
+  url: https://spotbugs.github.io/
+  documentation: http://spotbugs-in-kengo-toda.readthedocs.io/en/latest/index.html
+  parameters:
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+  commands:
+    parameters: "COMPILE_LOC : Location of jar file. LOC=/temp/jar"
+    pre:
+    exec: "spotbugs -textui"
+    shell: False
+    post:
+    report: "-xml -output {reportname} $COMPILE_LOC"
+    reportname: "{timestamp}.xml"
+    junit:
+  languages:
+    - "java"
+  profiles:
+    #Runs the full bandit scan
+    all: "-effort:max"
+ssllabs:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "server"
+  icon-sm:
+  icon-lg:
+  description: "This tool is a command-line client for the SSL Labs APIs, designed for automated and/or bulk testing."
+  url: https://github.com/ssllabs/ssllabs-scan
+  documentation: https://sourceforge.net/p/ssllabs/mailman/ssllabs-devel/
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "ssllabs-scan"
+    shell: True
+    report: "> {reportname}"
+    reportname: "{timestamp}.json"
+    post: "python /usr/bin/appsecpipeline/tools/ssllabs/parser.py -f '{reportname}'"
+    junit:
+  credentials:
+    simple:
+  profiles:
+    all: "-usecache -verbosity=DEBUG $URL"
+    quick: " "
+    grade: "-usecache -grade $URL"
+tenableio:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Infrastructure Scanner"
+  type: "infrastructure"
+  icon-sm:
+  icon-lg:
+  description: "Cloud-based Cyber Exposure platform for modern assets - from IT to cloud to IoT and OT."
+  url: https://www.tenable.com/products/tenable-io
+  documentation: https://docs.tenable.com/TenableIO.htm
+  docker: appsecpipeline/base-tools
+  parameters:
+    TARGET:
+      type: runtime
+      data_type: host
+      description: "Target hostname or ip address."
+    TENABLE_TEMPLATE:
+      type: runtime
+      data_type: string
+      description: "Tenable profile to run. (Defined in TenableIO)"
+    TENABLE_SCAN_NAME:
+      type: runtime
+      data_type: string
+      description: "Name of TenableIO scan."
+    TENABLE_ACCESS_KEY:
+      type:  config
+      data_type: key
+      description: "Access key, generated in the TenableIO GUI."
+    TENABLE_SECRET_KEY:
+      type: config
+      data_type: key
+      description: "Secret key, generated in the TenableIO GUI."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/tenableio/tenablescan.py --target $TARGET --access_key $TENABLE_ACCESS_KEY --secret_key $TENABLE_SECRET_KEY"
+    shell: False
+    report: "--report {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  profiles:
+    all: " "
+wpscan:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "WPScan is a black box WordPress vulnerability scanner."
+  url: https://wpscan.org
+  documentation: https://github.com/wpscanteam/wpscan
+  docker: "appsecpipeline/base-tools"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "wpscan --url $URL"
+    shell: True
+    report: "--format json --output {reportname}"
+    reportname: "{timestamp}.json"
+    post: "python /usr/bin/appsecpipeline/tools/wpscan/parser.py -f {reportname}"
+    junit:
+  profiles:
+    non_intrusive: "--detection-mode passive --random-user-agent"
+    plugins: "--enumerate p --random-user-agent"
+    all_enumeration: "--enumerate p --detection-mode mixed --random-user-agent"
+zap:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools and is actively maintained by hundreds of international volunteers*. It can help you automatically find security vulnerabilities in your web applications while you are developing and testing your applications. Its also a great tool for experienced pentesters to use for manual security testing."
+  url: https://github.com/zaproxy/zaproxy
+  documentation: https://github.com/zaproxy/zaproxy/wiki
+  docker: "appsecpipeline/zap"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of host to scan."
+    LOGIN_URL:
+      type: runtime
+      data_type: url
+      description: "Login URL of host to scan."
+    LOGIN_PARMS:
+      type: runtime
+      data_type: string
+      description: "Login paramaters in the format of username=user&password=password."
+    LOGIN_SUCCESS:
+      type: runtime
+      data_type: string
+      description: "Succesful login text to match on."
+    LOGIN_LOGOUT_PATTERN:
+      type: runtime
+      data_type: string
+      description: "Logout text to avoid."
+  commands:
+    pre:
+    exec: "python /zap/zap-baseline.py -t $URL"
+    shell: False
+    report: "-x {reportname}"
+    reportname: "{timestamp}.xml"
+    post:
+    junit:
+  credentials:
+    simple:
+  profiles:
+    all: ""
+    quick: " "

@@ -1,0 +1,33 @@
+git:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Utility"
+  type: "utility"
+  description: "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency."
+  docker: "appsecpipeline/base"
+  url: https://git-scm.com/
+  documentation: https://git-scm.com/docs/git
+  parameters:
+    GIT_URL:
+      type: runtime
+      data_type: url
+      description: "URL of the source code repository."
+    LOC:
+      type: runtime
+      data_type: string
+      description: "Location of the source code."
+    GIT_TAGS:
+      type: runtime
+      data_type: string
+      description: "Checkout a specified tag."
+  commands:
+    pre:
+    exec: "sh /usr/bin/appsecpipeline/tools/git/git.sh"
+    shell: False
+    post:
+    report:
+    reportname:
+    junit:
+  profiles:
+    clone: "clone $GIT_URL $LOC"
+    tags: "tag $GIT_URL $LOC $GIT_TAGS"

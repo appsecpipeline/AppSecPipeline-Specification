@@ -1,0 +1,51 @@
+prepenv:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Utility"
+  type: "utility"
+  description: "AppSecPipeline Utility"
+  docker: "appsecpipeline/base"
+  url: https://github.com/OWASP/django-DefectDojo
+  documentation: http://defectdojo.readthedocs.io/en/latest/
+  parameters:
+    DOJO_ENGAGEMENT_ID:
+      type: runtime
+      data_type: int
+      description: "Engagement id that exists in DefectDojo."
+    DOJO_DIR:
+      type: runtime
+      data_type: string
+      description: "Directory where the report reside in for importing into DefectDojo."
+    BUILD_ID:
+      type: runtime
+      data_type: string
+      description: "Build ID from upstream CI/CD."
+    DOJO_API_KEY:
+      type: config
+      data_type: key
+      description: "Dojo API key."
+    DOJO_HOST:
+      type: config
+      data_type: string
+      description: "DefectDojo host."
+    DOJO_PRODUCT_ID:
+      type: runtime
+      data_type: int
+      description: "DefectDojo product id."
+    DOJO_PROXY:
+      type: config
+      data_type: url
+      description: "Optional proxy for connecting to DefectDojo."
+  commands:
+    pre:
+    exec: "python /usr/bin/appsecpipeline/tools/prepenv/prep_run.py --dir=$DOJO_DIR --api_key=$DOJO_API_KEY --host=$DOJO_HOST --product=$DOJO_PRODUCT_ID"
+    shell: False
+    post:
+    report:
+    reportname:
+    junit:
+  profiles:
+    all: "--build_id=$BUILD_ID"
+    close_engagement: "--engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
+    engagement: "--engagement=$DOJO_ENGAGEMENT_ID"
+    all_proxy: "--proxy=$DOJO_PROXY --build_id=$BUILD_ID"
