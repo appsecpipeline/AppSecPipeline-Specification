@@ -4,12 +4,13 @@ docker rmi $(docker images | grep "none" | awk '/ / { print $3 }')
 #docker rmi $(docker images -q)
 echo "Building dockers"
 #--no-cache
-docker build -f dockers/base/dockerfile-base . -t appsecpipeline/base
-docker build -f dockers/base/dockerfile-base-tools . -t appsecpipeline/base-tools
-docker build -f dockers/base/dockerfile-sast . -t appsecpipeline/sast
+docker build -f dockers/base/dockerfile-base . -t appsecpipeline/base:1.0
+docker build -f dockers/base/dockerfile-base-tools . -t appsecpipeline/base-tools:1.0
+docker build -f dockers/base/dockerfile-sast . -t appsecpipeline/sast:1.0
+#docker build -f dockers/base/dockerfile-node . -t appsecpipeline/node:1.0
 docker build -f dockers/base/dockerfile-node . -t appsecpipeline/node
-docker build -f dockers/base/dockerfile-ruby . -t appsecpipeline/ruby
-docker build -f dockers/base/dockerfile-zap . -t appsecpipeline/zap
+docker build -f dockers/base/dockerfile-ruby . -t appsecpipeline/ruby:1.0
+docker build -f dockers/base/dockerfile-zap . -t appsecpipeline/zap:1.0
 docker build -f pipelines/jenkins/jenkins-local-dockerfile . -t appsecpipeline/jenkins
 
 echo

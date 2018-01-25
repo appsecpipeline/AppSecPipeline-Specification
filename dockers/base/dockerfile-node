@@ -1,4 +1,4 @@
-FROM node
+FROM node:9.4.0
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -8,7 +8,11 @@ RUN apt-get update \
     git \
     python-pip \
     python2.7 \
-    python2.7-dev
+    python2.7-dev \
+    && usermod -u 2000 node \
+    && groupmod -g 2000 node \
+    && find / /proc -prune  -group 1000 -exec chgrp -h node {} \; \
+    && find / /proc -prune -user 1000 -exec chown -h foo {} \;
 
 ########## AppSecPipeline Install ##########
 COPY tools /usr/bin/appsecpipeline/tools
