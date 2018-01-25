@@ -13,6 +13,7 @@ import shlex
 import os
 import string
 import uuid
+import requests
 from subprocess import call
 from datetime import datetime
 import base64
@@ -155,6 +156,7 @@ def checkFolderPath(toolName):
 def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, key=None):
     logging.info("Tool: " + toolName)
     yamlConfig = getYamlConfig(toolName)
+    toolStatus = None
 
     with open(yamlConfig, 'r') as stream:
         try:
@@ -228,11 +230,11 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
                         if "shell" in commands:
                             if commands["shell"] == True:
                                 logging.info("Using shell call")
-                                call(launchCmd, shell=True)
+                                toolStatus = call(launchCmd, shell=True)
                             else:
-                                call(shlex.split(launchCmd))
+                                toolStatus = call(shlex.split(launchCmd))
                         else:
-                            call(shlex.split(launchCmd))
+                            toolStatus = call(shlex.split(launchCmd))
 
                     #Execute a pre-commmand, such as a setup or update requirement
                     if commands["post"] is not None:
@@ -261,6 +263,31 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
         except yaml.YAMLError as exc:
             print(exc)
 
+        return toolStatus
+
+def webhook(url, tool, toolStatus, runeveryTool, runeveryToolStatus):
+    method = "GET"
+    params = {}
+
+    params['tool'] = tool
+    params['toolStatus'] = toolStatus
+
+    if runeveryTool:
+        params['runeveryTool'] = runeveryTool
+        params['runeveryToolStatus'] = runeveryToolStatus
+
+    headers = {
+        'User-Agent': "AppSecPipeline_Container_Tool",
+    }
+
+    try:
+        response = requests.request(method=method, url=url, params=params, headers=headers,
+        timeout=300, verify=False)
+
+        data = response.text
+    except requests.exceptions as e:
+        return "WebHook error communicating with host: " + str(e)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=False)
     #Command line options
@@ -273,6 +300,7 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--log", help="Logging level: debug, info, warning, error, critical", default="debug")
     parser.add_argument("-a", "--auth", help="Tool configuration credentials and or API keys.", required=False, default=None)
     parser.add_argument("-k", "--key", help="Key for decrypting configuration. (string)", default=None)
+    parser.add_argument("-w", "--webhook", help="URL to call upon completion of container.", required=False)
 
     args, remaining_argv = parser.parse_known_args()
 
@@ -312,7 +340,11 @@ if __name__ == '__main__':
     logfile_name = os.path.join(logfile_dir,tool + ".log")
     logging.basicConfig(filename=logfile_name, filemode="w", level=numeric_level)
 
-    executeTool(tool, profile_run, credentialedScan, test_mode, args.auth, args.key)
+    toolStatus = executeTool(tool, profile_run, credentialedScan, test_mode, args.auth, args.key)
 
+    runeveryToolStatus = None
     if runeveryTool is not None:
-        executeTool(runeveryTool, runeveryProfile, False, test_mode, args.auth, args.key)
+        runeveryToolStatus = executeTool(runeveryTool, runeveryProfile, False, test_mode, args.auth, args.key)
+
+    if args.webhook:
+        webhook(args.webhook, tool, toolStatus, runeveryTool, runeveryToolStatus)
