@@ -1,4 +1,6 @@
-FROM kalilinux/kali-linux-docker
+FROM ubuntu:16.04
+
+# ASPTAG = appsecpipeline/sast:1.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -13,7 +15,8 @@ RUN apt-get update \
     python2.7-dev \
     openjdk-9-jre-headless \
     cloc \
-    unzip
+    unzip \
+    wget 
 
 ########## AppSecPipeline Install ##########
 COPY tools /usr/bin/appsecpipeline/tools
@@ -21,6 +24,9 @@ COPY dockers/base/setupdocker.sh /tmp
 ENV PATH="/usr/bin/appsecpipeline/tools:${PATH}"
 RUN sh /tmp/setupdocker.sh
 RUN rm /tmp/setupdocker.sh
+
+########## Checkmarx Install ##########
+RUN pip install -r /usr/bin/appsecpipeline/tools/checkmarx/requirements.txt
 
 ########## Bandit Install ##########
 RUN pip install -U bandit

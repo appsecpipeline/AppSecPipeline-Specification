@@ -1,4 +1,6 @@
-FROM kalilinux/kali-linux-docker
+FROM ubuntu:16.04
+
+# ASPTAG = appsecpipeline/base-tools:1.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -16,7 +18,8 @@ RUN apt-get update \
     nikto \
     cloc \
     unzip \
-    nmap
+    nmap \
+    wget
 
 ########## AppSecPipeline Install ##########
 COPY tools /usr/bin/appsecpipeline/tools

@@ -1,4 +1,6 @@
-FROM kalilinux/kali-linux-docker
+FROM ubuntu:16.04
+
+# ASPTAG = appsecpipeline/base:1.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -21,9 +23,6 @@ COPY dockers/base/setupdocker.sh /tmp
 ENV PATH="/usr/bin/appsecpipeline/tools:${PATH}"
 RUN sh /tmp/setupdocker.sh
 RUN rm /tmp/setupdocker.sh
-
-########## Checkmarx Install ##########
-RUN pip install -r /usr/bin/appsecpipeline/tools/checkmarx/requirements.txt
 
 ENTRYPOINT ["launch.py"]
 
