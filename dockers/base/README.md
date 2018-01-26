@@ -1,7 +1,7 @@
 # AppSec Pipeline Tool Dockers
 
 | Docker Image              | Tool          | Version     |
-| --------------------------|:-------------:|_-----------:|
+| --------------------------|---------------|-------------|
 | appsecpipeline/base:1.0   | git           | >= 2.15.1   |
 |                           | csvtool       | >= 1.5-1+b2 |
 |                           | nmap          | >= 7.60     |
