@@ -1,0 +1,59 @@
+@startuml
+title AppSec Pipeline for SAST tools
+participant "Event Source" as E
+participant "Controller" as C
+participant "Local File system" as F
+collections "Tools" as T
+collections "Targets" as A
+collections "Results Volume" as V
+participant "Docker Repo" as R
+participant "Persistent Storage" as P
+participant "Vuln Repository" as D
+autonumber "<b>[00]"
+group Initialization on start
+  C -> F : Read configs 
+  F -> C : master.yaml 
+  F -> C : secpipeline-config.yaml 
+  C -> R : List images
+  R -> C : Image list
+  C -> R : Pull missing image(s)
+  R -> C : Send Image(s)
+end
+note right: Need to add notification sink to diagram
+E -> C : Event occurs 
+group **startup** contains 0+ tools
+  C -> A : Launch target volume containing source code
+  A -> C : Completed
+end
+C -> T : Check for presence of appsec.pipeline in root of source
+T -> C : appsec.pipeline (if present)
+C -> C : Override pipeline profile from master.yaml
+C -> C : If needed, re-run startup (?)
+group **pipeline** contains 1+ tools
+  group For each tool in pipeline
+    C -> T : Launch tool container with parameters
+    T -> V : Mount results volume
+    T -> C : Ready
+    T -> A : Run tool against target
+    T -> V : Write tool results
+    group Optional
+      T -> D : Upload results to REST API
+    end
+    T -> C : Completed
+  end
+end
+group **final** contains 0+ tool
+  C -> T : Launch results submitter container (if not done above)
+  T -> D : Upload results to REST API
+end
+group **clean-up** done at end of every run
+  C -> T : Destroy tool containers (1+)
+  group Optional
+    C -> V : Persist results
+    V -> P : Send all tool results for pipeline run
+  end
+  C -> V : Destroy Pipeline Volume
+end
+
+@enduml
+
