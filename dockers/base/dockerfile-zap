@@ -1,5 +1,7 @@
 FROM owasp/zap2docker-stable:2.7.0
 
+# ASPTAG = appsecpipeline/zap:1.0
+
 USER root
 
 RUN apt-get update \
