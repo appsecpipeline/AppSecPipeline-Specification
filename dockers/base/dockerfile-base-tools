@@ -16,7 +16,6 @@ RUN apt-get update \
     csvtool \
     openjdk-9-jre-headless \
     nikto \
-    cloc \
     unzip \
     nmap \
     wget
@@ -33,6 +32,14 @@ RUN pip install -U tenable_io
 
 ########## Bandit Install ##########
 RUN pip install -U bandit
+
+########## Cloc Install ##########
+ARG CLOCVER=1.74
+
+RUN mkdir /tmp/cloc
+RUN wget -qO- https://github.com/AlDanial/cloc/releases/download/${CLOCVER}/cloc-${CLOCVER}.tar.gz | tar xvz -C /tmp/cloc --strip-components=1
+RUN cp /tmp/cloc/cloc /usr/bin/
+RUN rm -R /tmp/cloc
 
 ########## Arachni Install ##########
 #Install Arachni, packaged apt-get install Arachni doesn't work for some reason, hangs on BrowserCluster

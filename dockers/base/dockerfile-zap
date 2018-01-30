@@ -22,6 +22,7 @@ RUN pip install -U requests
 RUN pip install -U junit_xml_output
 RUN pip install -U defectdojo_api
 RUN pip install -U cryptography
+RUN pip install -U pyyaml
 
 RUN chmod +x /usr/bin/appsecpipeline/tools/launch.py
 RUN chmod +x /usr/bin/appsecpipeline/tools/junit.py

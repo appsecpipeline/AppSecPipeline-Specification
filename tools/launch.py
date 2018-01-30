@@ -13,6 +13,7 @@ import shlex
 import os
 import string
 import uuid
+import json
 import requests
 from subprocess import call
 from datetime import datetime
@@ -266,7 +267,11 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
         return toolStatus
 
 def webhook(url, tool, toolStatus, runeveryTool, runeveryToolStatus):
-    method = "GET"
+    logging.info("Launching webhook for URL: " + url)
+    logging.info("Tool" + tool)
+    logging.info("toolStatus" + str(toolStatus))
+
+    method = "POST"
     params = {}
 
     params['tool'] = tool
@@ -277,11 +282,12 @@ def webhook(url, tool, toolStatus, runeveryTool, runeveryToolStatus):
         params['runeveryToolStatus'] = runeveryToolStatus
 
     headers = {
-        'User-Agent': "AppSecPipeline_Container_Tool",
+        'User-Agent': 'AppSecPipeline_Container_Tool',
+        'Content-Type': 'application/json',
     }
 
     try:
-        response = requests.request(method=method, url=url, params=params, headers=headers,
+        response = requests.request(method=method, url=url, data=json.dumps(params), headers=headers,
         timeout=300, verify=False)
 
         data = response.text

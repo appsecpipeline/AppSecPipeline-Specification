@@ -19,7 +19,7 @@ git:
     GIT_TAGS:
       type: runtime
       data_type: string
-      description: "Checkout a specified tag."
+      description: "Checkout a specified tag or branch."
   commands:
     pre:
     exec: "sh /usr/bin/appsecpipeline/tools/git/git.sh"
