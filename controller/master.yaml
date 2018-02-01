@@ -11,12 +11,6 @@ global:
 profiles:
   sourcecode:
     pipeline:
-      - tool: "git"
-        tool-profile: "tags"
-        on-failure: "fail" #continue / fail / tool?
-      - tool: "cloc"
-        tool-profile: "all"
-        on-failure:
       - tool: "checkmarx"
         tool-profile: "all"
       - tool: "bandit"
@@ -25,8 +19,16 @@ profiles:
         tool-profile: "tuned"
       - tool: "retirejs"
         tool-profile: "all"
-      - tool: "defectdojo"
+    startup:
+      - tool: "git"
+        tool-profile: "tags"
+        on-failure: "fail"
+      - tool: "cloc"
         tool-profile: "all"
+        on-failure: "fail"
+    final:
+      - tool: defectdojo
+      - tool-profile: all
 
   gitcloc:
     pipeline:
@@ -67,8 +69,8 @@ profiles:
       tool: defectdojo
       tool-profile: engagement
     final:
-      tool: defectdojo
-      tool-profile: close_engagement
+      - tool: defectdojo
+        tool-profile: close_engagement
 
   ssllabs:
     pipeline:
@@ -89,6 +91,28 @@ profiles:
     pipeline:
      - tool: "nmap"
        tool-profile: "quick"
+    final:
+      - tool: defectdojo
+        tool-profile: all
+
+  nmapnikto:
+    pipeline:
+     - tool: "nmap"
+       tool-profile: "quick"
+     - tool: "nikto"
+       tool-profile: "info"
+
+  dynamicquick:
+    pipeline:
+      - tool: "zap"
+        tool-profile: "quick"
+      - tool: "nmap"
+        tool-profile: "quick"
+      - tool: "ssllabs"
+        tool-profile: "all"
+    final:
+      - tool: nikto
+        tool-profile: tuned
 
   defectdojonmap:
     pipeline:
