@@ -9,7 +9,7 @@ wpscan:
   description: "WPScan is a black box WordPress vulnerability scanner."
   url: https://wpscan.org
   documentation: https://github.com/wpscanteam/wpscan
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     URL:
       type: runtime

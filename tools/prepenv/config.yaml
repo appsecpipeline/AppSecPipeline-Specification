@@ -4,7 +4,7 @@ prepenv:
     - "Utility"
   type: "utility"
   description: "AppSecPipeline Utility"
-  docker: "appsecpipeline/base"
+  docker: "appsecpipeline/base:1.0"
   url: https://github.com/OWASP/django-DefectDojo
   documentation: http://defectdojo.readthedocs.io/en/latest/
   parameters:

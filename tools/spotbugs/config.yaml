@@ -4,7 +4,7 @@ spotbugs:
     - "Static Code Analyzer"
   type: "static"
   description: "SpotBugs is a program which uses static analysis to look for bugs in Java code."
-  docker: "appsecpipeline/sast"
+  docker: "appsecpipeline/sast:1.0"
   url: https://spotbugs.github.io/
   documentation: http://spotbugs-in-kengo-toda.readthedocs.io/en/latest/index.html
   parameters:

@@ -9,7 +9,7 @@ nmap:
   description: "Nmap is a free and open source (license) utility for network discovery and security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts."
   url: https://nmap.org/
   documentation: https://nmap.org/book/man.html
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     TARGET:
       type: runtime

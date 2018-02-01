@@ -10,7 +10,7 @@ appspider:
   description: "AppSpider automatically finds vulnerabilities across a wide range of applications from the relatively simple to the most complex—and it includes unique capabilities that enable teams to automate more of the security testing program across the entire software development lifecycle, from creation through production."
   url: https://www.rapid7.com/products/appspider/
   documentation: https://appspider.help.rapid7.com/docs/
-  docker: "appsecpipeline/base:latest"
+  docker: "appsecpipeline/base:1.0"
   parameters:
     APPSPIDER_RUN_SCAN_POLL:
       type: runtime

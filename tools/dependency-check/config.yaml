@@ -4,7 +4,7 @@ dependency-check:
     - "Components with known Vulnerabilities"
   type: "static"
   description: "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. Currently Java and .NET are supported; additional experimental support has been added for Ruby, Node.js, Python, and limited support for C/C++ build systems (autoconf and cmake)."
-  docker: "appsecpipeline/sast"
+  docker: "appsecpipeline/sast:1.0"
   url: https://www.owasp.org/index.php/OWASP_Dependency_Check
   documentation: https://jeremylong.github.io/DependencyCheck/
   parameters:
