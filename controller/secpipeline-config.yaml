@@ -10,7 +10,7 @@ appspider:
   description: "AppSpider automatically finds vulnerabilities across a wide range of applications from the relatively simple to the most complex—and it includes unique capabilities that enable teams to automate more of the security testing program across the entire software development lifecycle, from creation through production."
   url: https://www.rapid7.com/products/appspider/
   documentation: https://appspider.help.rapid7.com/docs/
-  docker: "appsecpipeline/base"
+  docker: "appsecpipeline/base:1.0"
   parameters:
     APPSPIDER_RUN_SCAN_POLL:
       type: runtime
@@ -70,7 +70,7 @@ arachni:
   description: "Arachni is a feature-full, modular, high-performance Ruby framework aimed towards helping penetration testers and administrators evaluate the security of modern web applications."
   url: http://www.arachni-scanner.com/
   documentation: https://github.com/Arachni/arachni/wiki/Command-line-user-interface
-  docker: "appsecpipeline/base-tools:latest"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     URL:
       type: runtime
@@ -120,7 +120,7 @@ bandit:
     - "Static Code Analyzer"
   type: "static"
   description: "Bandit is a tool designed to find common security issues in Python code. To do this Bandit processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes. Once Bandit has finished scanning all the files it generates a report."
-  docker: "appsecpipeline/base-tools:latest"
+  docker: "appsecpipeline/base-tools:1.0"
   url: https://wiki.openstack.org/wiki/Security/Projects/Bandit
   documentation: https://docs.openstack.org/bandit/latest/index.html
   parameters:
@@ -149,7 +149,7 @@ brakeman:
     - "Static Code Analyzer"
   type: "static"
   description: "Brakeman is an open source vulnerability scanner specifically designed for Ruby on Rails applications. It statically analyzes Rails application code to find security issues at any stage of development."
-  docker: "appsecpipeline/ruby:latest"
+  docker: "appsecpipeline/ruby:1.0"
   url: https://brakemanscanner.org/
   documentation: https://brakemanscanner.org/docs/
   parameters:
@@ -183,7 +183,7 @@ checkmarx:
   description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
   url: https://www.checkmarx.com/technology/static-code-analysis-sca/
   documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
-  docker: appsecpipeline/base
+  docker: appsecpipeline/base:1.0
   parameters:
     LOC:
       type: runtime
@@ -243,7 +243,7 @@ cloc:
   description: "cloc counts blank lines, comment lines, and physical lines of source code in many programming languages."
   url: https://github.com/AlDanial/cloc
   documentation: https://github.com/AlDanial/cloc
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     LOC:
       type: runtime
@@ -267,7 +267,7 @@ defectdojo:
     - "Report Consumer"
   type: "collector"
   description: "DefectDojo is a security program and vulnerability management tool. DefectDojo allows you to manage your application security program, maintain product and application information, schedule scans, triage vulnerabilities and push findings into defect trackers. Consolidate your findings into one source of truth with DefectDojo."
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   url: https://github.com/OWASP/django-DefectDojo
   documentation: http://defectdojo.readthedocs.io/en/latest/
   parameters:
@@ -318,7 +318,7 @@ dependency-check:
     - "Components with known Vulnerabilities"
   type: "static"
   description: "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. Currently Java and .NET are supported; additional experimental support has been added for Ruby, Node.js, Python, and limited support for C/C++ build systems (autoconf and cmake)."
-  docker: "appsecpipeline/sast"
+  docker: "appsecpipeline/sast:1.0"
   url: https://www.owasp.org/index.php/OWASP_Dependency_Check
   documentation: https://jeremylong.github.io/DependencyCheck/
   parameters:
@@ -353,7 +353,7 @@ git:
     - "Utility"
   type: "utility"
   description: "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency."
-  docker: "appsecpipeline/base"
+  docker: "appsecpipeline/base:1.0"
   url: https://git-scm.com/
   documentation: https://git-scm.com/docs/git
   parameters:
@@ -391,7 +391,7 @@ nikto:
   description: "Web server scanner which performs comprehensive tests against web servers for multiple items, including over 3500 potentially dangerous files/CGIs, versions on over 900 servers, and version specific problems on over 250 servers."
   url: https://cirt.net/Nikto2
   documentation: https://cirt.net/nikto2-docs/
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     URL:
       type: runtime
@@ -428,7 +428,7 @@ nmap:
   description: "Nmap is a free and open source (license) utility for network discovery and security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts."
   url: https://nmap.org/
   documentation: https://nmap.org/book/man.html
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     TARGET:
       type: runtime
@@ -481,7 +481,7 @@ prepenv:
     - "Utility"
   type: "utility"
   description: "AppSecPipeline Utility"
-  docker: "appsecpipeline/base"
+  docker: "appsecpipeline/base:1.0"
   url: https://github.com/OWASP/django-DefectDojo
   documentation: http://defectdojo.readthedocs.io/en/latest/
   parameters:
@@ -532,7 +532,7 @@ retirejs:
     - "Components with known Vulnerabilities"
   type: "static"
   description: "There is a plethora of JavaScript libraries for use on the Web and in Node.JS apps out there. This greatly simplifies development,but we need to stay up-to-date on security fixes. Using 'Components with Known Vulnerabilities' is now a part of the OWASP Top 10 list of security risks and insecure libraries can pose a huge risk to your Web app. The goal of Retire.js is to help you detect the use of JS-library versions with known vulnerabilities."
-  docker: "appsecpipeline/node"
+  docker: "appsecpipeline/node:1.0"
   url: https://retirejs.github.io/retire.js/
   documentation: https://github.com/RetireJS/retire.js
   parameters:
@@ -560,7 +560,7 @@ snyk:
     - "Static Code Analyzer"
   type: "static"
   description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
-  docker: "appsecpipeline/node"
+  docker: "appsecpipeline/node:1.0"
   url: https://snyk.io/
   documentation: https://snyk.io/docs/
   parameters:
@@ -593,7 +593,7 @@ spotbugs:
     - "Static Code Analyzer"
   type: "static"
   description: "SpotBugs is a program which uses static analysis to look for bugs in Java code."
-  docker: "appsecpipeline/sast"
+  docker: "appsecpipeline/sast:1.0"
   url: https://spotbugs.github.io/
   documentation: http://spotbugs-in-kengo-toda.readthedocs.io/en/latest/index.html
   parameters:
@@ -626,7 +626,7 @@ ssllabs:
   description: "This tool is a command-line client for the SSL Labs APIs, designed for automated and/or bulk testing."
   url: https://github.com/ssllabs/ssllabs-scan
   documentation: https://sourceforge.net/p/ssllabs/mailman/ssllabs-devel/
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     URL:
       type: runtime
@@ -656,7 +656,7 @@ tenableio:
   description: "Cloud-based Cyber Exposure platform for modern assets - from IT to cloud to IoT and OT."
   url: https://www.tenable.com/products/tenable-io
   documentation: https://docs.tenable.com/TenableIO.htm
-  docker: appsecpipeline/base-tools
+  docker: appsecpipeline/base-tools:1.0
   parameters:
     TARGET:
       type: runtime
@@ -699,7 +699,7 @@ wpscan:
   description: "WPScan is a black box WordPress vulnerability scanner."
   url: https://wpscan.org
   documentation: https://github.com/wpscanteam/wpscan
-  docker: "appsecpipeline/base-tools"
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     URL:
       type: runtime
@@ -728,7 +728,7 @@ zap:
   description: "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools and is actively maintained by hundreds of international volunteers*. It can help you automatically find security vulnerabilities in your web applications while you are developing and testing your applications. Its also a great tool for experienced pentesters to use for manual security testing."
   url: https://github.com/zaproxy/zaproxy
   documentation: https://github.com/zaproxy/zaproxy/wiki
-  docker: "appsecpipeline/zap"
+  docker: "appsecpipeline/zap:1.0"
   parameters:
     URL:
       type: runtime
