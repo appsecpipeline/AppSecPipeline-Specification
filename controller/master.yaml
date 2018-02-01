@@ -28,7 +28,7 @@ profiles:
         on-failure: "fail"
     final:
       - tool: defectdojo
-      - tool-profile: all
+        tool-profile: all
 
   gitcloc:
     pipeline:
@@ -63,8 +63,8 @@ profiles:
       - tool: "ssllabs"
         tool-profile: "all"
     startup:
-      tool: prepenv
-      tool-profile: all
+      - tool: prepenv
+        tool-profile: all
     runevery:
       tool: defectdojo
       tool-profile: engagement
