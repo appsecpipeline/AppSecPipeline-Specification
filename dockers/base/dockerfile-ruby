@@ -31,6 +31,9 @@ RUN gem install wpscan
 #Update WPScanner DB
 RUN wpscan --update
 
+########## Change to appsecpipeline user ##########
+USER appsecpipeline
+
 ENTRYPOINT ["launch.py"]
 
 HEALTHCHECK --interval=1m --retries=2 --timeout=5s CMD python /usr/bin/appsecpipeline/tools/health.py

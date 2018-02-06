@@ -63,6 +63,9 @@ ARG SSLLAB=1.4.0
 
 RUN wget -qO- https://github.com/ssllabs/ssllabs-scan/releases/download/v${SSLLAB}/ssllabs-scan_${SSLLAB}-linux64.tgz | tar xvz -C /usr/bin --strip-components=1
 
+########## Checkmarx Install ##########
+RUN pip install -r /usr/bin/appsecpipeline/tools/checkmarx/requirements.txt
+
 ########## Change to appsecpipeline user ##########
 USER appsecpipeline
 
