@@ -35,7 +35,6 @@ def getYamlConfig(toolName):
     return yamlLoc
 
 def getParameterAttribs(toolName, command, authFile, key):
-    toolYaml = None
     with open(authFile, 'r') as stream:
         try:
             #Tool configuration
@@ -46,16 +45,16 @@ def getParameterAttribs(toolName, command, authFile, key):
 
             if toolName in config:
                 #Set the object to the tool yaml section
-                toolYaml = config[toolName]
-                #toolParms = tool["parameters"]
-                #for parameter in toolParms:
-                #    if parameter in command:
-                #        command = command.replace("$" + parameter, f.decrypt(toolParms[parameter]["value"]))
+                tool = config[toolName]
+                toolParms = tool["parameters"]
+                for parameter in toolParms:
+                    if parameter in command:
+                        command = command.replace("$" + parameter, f.decrypt(toolParms[parameter]["value"]))
 
         except yaml.YAMLError as exc:
             logging.warning(exc)
 
-    return toolYaml
+    return command
 
 #Allow for dynamic arguments to support a wide variety of tools
 #Format URL=Value, YAML Definition for substitution $URL
@@ -226,7 +225,7 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
                         logging.info("Warning: Some commands haven't been substituted. Exiting.")
                         logging.info(launchCmd)
                         logging.info("*****************************")
-                        return
+                        sys.exit(1)
 
                     if not test_mode:
                         if "shell" in commands:
@@ -268,25 +267,19 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
         return toolStatus
 
 def webhook(url, tool, toolStatus, runeveryTool, runeveryToolStatus):
-    logging.info("Launching Webhook for URL: " + url)
+    logging.info("Launching webhook for URL: " + url)
+    logging.info("Tool" + tool)
+    logging.info("toolStatus" + str(toolStatus))
 
     method = "POST"
     params = {}
-
-    if toolStatus == None:
-        toolStatus = 99 #Unknown error occured
 
     params['tool'] = tool
     params['toolStatus'] = toolStatus
 
     if runeveryTool:
         params['runeveryTool'] = runeveryTool
-        if runeveryToolStatus == None:
-            runeveryToolStatus = 99
         params['runeveryToolStatus'] = runeveryToolStatus
-
-    logging.info("Tool" + tool)
-    logging.info("toolStatus" + str(toolStatus))
 
     headers = {
         'User-Agent': 'AppSecPipeline_Container_Tool',

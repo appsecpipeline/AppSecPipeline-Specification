@@ -7,28 +7,34 @@ services:
 
 env:
   global:
-    - VERSION=1.${TRAVIS_BUILD_NUMBER}
+    - VERSION=Travis.${TRAVIS_BUILD_NUMBER}
   matrix:
     - PIPELINE_BUILD='base'
       DOCKER_FILE='base/dockerfile-base'
       REPO='appsecpipeline/base'
+      DOCKER_VESION='1.2'
     - PIPELINE_BUILD='basetools'
       DOCKER_FILE='base/dockerfile-base-tools'
       REPO='appsecpipeline/base-tools'
+      DOCKER_VESION='1.0'
     - PIPELINE_BUILD=sast
       DOCKER_FILE='base/dockerfile-sast'
       REPO='appsecpipeline/sast'
+      DOCKER_VESION='1.0'
     - PIPELINE_BUILD=node
       DOCKER_FILE='base/dockerfile-node'
       REPO='appsecpipeline/node'
+      DOCKER_VESION='1.0'
     - PIPELINE_BUILD=ruby
       DOCKER_FILE='base/dockerfile-ruby'
       REPO='appsecpipeline/ruby'
+      DOCKER_VESION='1.0'
     - PIPELINE_BUILD=zap
       DOCKER_FILE='base/dockerfile-zap'
       REPO='appsecpipeline/zap'
+      DOCKER_VESION='1.0'
 
 script:
   - |
     echo "Running PipelineBuild=$PIPELINE_BUILD"
-    bash build/docker-hub.sh $TRAVIS_BRANCH $REPO $VERSION $DOCKER_FILE
+    bash build/docker-hub.sh $TRAVIS_BRANCH $REPO $VERSION $DOCKER_VESION $DOCKER_FILE

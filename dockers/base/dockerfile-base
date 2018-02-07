@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-# ASPTAG = appsecpipeline/base:1.0
+# ASPTAG = appsecpipeline/base:1.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
