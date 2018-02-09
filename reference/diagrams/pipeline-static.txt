@@ -21,15 +21,15 @@ group Initialization on start
 end
 note right: Need to add notification sink to diagram
 E -> C : Event occurs 
-group **startup** contains 0+ tools
+group **Startup** contains 0+ tools
   C -> A : Launch target volume containing source code
   A -> C : Completed
 end
 C -> T : Check for presence of appsec.pipeline in root of source
 T -> C : appsec.pipeline (if present)
 C -> C : Override pipeline profile from master.yaml
-C -> C : If needed, re-run startup (?)
-group **pipeline** contains 1+ tools
+C -> C : If present, run startup item(s) from appsec.pipeline
+group **Pipeline** contains 1+ tools
   group For each tool in pipeline
     C -> T : Launch tool container with parameters
     T -> V : Mount results volume
@@ -42,17 +42,18 @@ group **pipeline** contains 1+ tools
     T -> C : Completed
   end
 end
-group **final** contains 0+ tool
+group **Final** contains 0+ tool
   C -> T : Launch results submitter container (if not done above)
   T -> D : Upload results to REST API
 end
-group **clean-up** done at end of every run
+group **Cleanup** done at end of every run
   C -> T : Destroy tool containers (1+)
+  C -> A : Destroy target containers (0+)
   group Optional
     C -> V : Persist results
     V -> P : Send all tool results for pipeline run
   end
-  C -> V : Destroy Pipeline Volume
+  C -> V : Destroy Results Volume for this Pipeline
 end
 
 @enduml
