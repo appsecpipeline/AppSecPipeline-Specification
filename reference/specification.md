@@ -19,6 +19,8 @@ To set the terminology used in this specification, the following AppSec specific
 * _SAST run_ - A pipeline run whose target is an application's code base
 * _DAST run_ - A pipeline run whose target is a running application
 * Vulnerability Repository - a location where all the issues found by a pipeline run are stored for reporting, metrics and other purposes.
+* _Pipeline Item_ - An item of work in the AppSec Pipeline done by a specified container image to achieve a goal
+* * e.g. Run a tool against a target, clone source from a Git repo, submit results to the REST API of a vuln repository, transform tool output to a usable format, ...
 
 ### Key states of AppSec Pipelines
 
@@ -98,24 +100,89 @@ Assuming a event has occurred and the necessary data is available, the controlle
 Prior to startup, the following will need to occur
 
 * Take the pipeline name/label from the event and match it with ones provided by master.yaml
+* Generate a UUID to use as a unique name for this pipeline run
 * Based on the chosen pipeline name, then do the steps below as outline in that named pipeline.
 
 ##### Startup
 
 Note: Startup is optional and must contain 0 or more items to run
 
-* TBD
+* Launch Target
+* * SAST Run
+* * * Launch target volume for source code {09}
+* * * * If needed, pull code into target volume from source repository
+* * * Launch results volume (optionally share single volume for results and source) {11}
+* * * Check for the presence of appsec.pipeline in root of source repo {13}
+* * * * If present, parse appsec.pipeline and override profile from master.yaml {15}
+* * * If needed, run any startup items provided in the appsec.pipeline file {16}
+* * DAST Run
+* * * Launch target volume for running app (optional - may be available on network already)
+* * * Launch results volume
 
-##### Pipeline
+##### Pipeline (call this Tools? over Pipeline to avoid confusion?  Something else?)
 
-* TBD
+For each item in the list of 1+ pipeline items:
+
+* Launch the specified tool container {17}
+* * Required data to pass to container
+* * * TBD
+* * Mount results volume on tool container {18}
+* * * Mount point: /opt/appsecpipeline/results
+* Run tool against target using the provided command in the selected tool profile {20}
+* * Output of tool is handled as needed by options specified in the tool profile {21}
+* Upload results of single tool run to Vuln Repository (optional) {22}
+* * Use REST API to push results of a single tool run to Vuln repo
+* Send "Completed" Webhook to controller {23}
+* * Webhook is a POST containing
+* * * TBD
 
 ##### Final
 
 Note: Final is optional and must contain 0 or more items to run
 
-* TBD
+* Launch results submitter container (if not done above with each tool run) {24}
+* * Required data to pass to container
+* * * TBD
+* Run any other specified items from the named pipeline
 
 ##### Cleanup
 
+* Destroy all tool containers used in this named pipeline run
+* * List running containers and filter for those with the runs UUID
+* * Destroy any matching containers
+* Destroy any target containers used in this run (only needed when optional target containers are deployed)
+* Persist results to the persistent volume
+* * Launch archiver container with results volume mounted
+* * Push results to persistent volume (exact method depends on implementation)
+* * Destroy archiver container
+* Destroy results volume for this named pipeline run
+
+## Appendix
+
+Constants, conventions and other fixed values in the AppSec Pipeline:
+
+* Results volume mount point in tool containers:
+* * /opt/appsecpipeline/results
+* Subdirectory for each tools results:
+* * {UUID}_{toolname}
+* * * If multiple runs of same tool, append "-###" to the name starting with -001 for the first match
+* ID of the default user for AppSec Pipeline docker images:
+* * 1337
+* Name of the default user for AppSec Pipeline docker images:
+* * TBD
+* Naming scheme for containers launched during a pipeline run
+* * {UUID}_tool-name for tool containers
+* * {UUID}_results for results containers
+* * {UUID}_target-name for target containers
+
+Conventions for creating AppSec Pipeline Docker images:
+
+* TBD
+* Needs to include launch.py
+* Probably should have unified base image if possible
+
+Conventions used when using Defect Dojo as the Vulnerability Repository:
+
+* Each named pipeline run is an unique engagement in Dojo
+* * Within the engagement, each tool run is a separate test within that engagement
 * TBD

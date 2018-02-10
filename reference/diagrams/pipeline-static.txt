@@ -25,8 +25,10 @@ group **Startup** contains 0+ tools
   C -> A : Launch target volume containing source code
   A -> C : Completed
 end
-C -> T : Check for presence of appsec.pipeline in root of source
-T -> C : appsec.pipeline (if present)
+C -> V : Launch results volume
+V -> C : Volume ready
+C -> A : Check for presence of appsec.pipeline in root of source
+A -> C : appsec.pipeline (if present)
 C -> C : Override pipeline profile from master.yaml
 C -> C : If present, run startup item(s) from appsec.pipeline
 group **Pipeline** contains 1+ tools
