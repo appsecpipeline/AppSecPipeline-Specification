@@ -15,6 +15,7 @@ RUN apt-get update \
     python2.7-dev \
     && apt-get remove python-pip -y \
     && easy_install pip \
+    && pip install -I pyOpenSSL \
     && usermod -u 2000 node \
     && groupmod -g 2000 node \
     && find / /proc -prune  -group 1000 -exec chgrp -h node {} \; \

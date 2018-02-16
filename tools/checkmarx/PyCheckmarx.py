@@ -201,7 +201,10 @@ class PyCheckmarx(object):
 		file_paths = self.get_directory(directory)
 		with ZipFile(tempZip,'w') as zip:
 			for file in file_paths:
-				zip.write(file)
+				try:
+					zip.write(file)
+				except:
+					print "File skipped: " + file
 
 		srcCode = open(tempZip, 'rb')
 

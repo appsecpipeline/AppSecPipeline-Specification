@@ -183,7 +183,7 @@ checkmarx:
   description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
   url: https://www.checkmarx.com/technology/static-code-analysis-sca/
   documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
-  docker: "appsecpipeline/base-tools:1.0"
+  docker: "appsecpipeline/base-tools:1.1"
   parameters:
     LOC:
       type: runtime
@@ -368,10 +368,10 @@ git:
     GIT_TAGS:
       type: runtime
       data_type: string
-      description: "Checkout a specified tag."
+      description: "Checkout a specified tag or branch."
   commands:
     pre:
-    exec: "sh git.sh"
+    exec: "sh /usr/bin/appsecpipeline/tools/git/git.sh"
     shell: False
     post:
     report:
@@ -379,7 +379,7 @@ git:
     junit:
   profiles:
     clone: "clone $GIT_URL $LOC"
-    tags: "$GIT_URL $LOC $GIT_TAGS"
+    tags: "tag $GIT_URL $LOC $GIT_TAGS"
 nikto:
   version: AppSecPipeline 0.5.0
   tags:
@@ -560,7 +560,7 @@ snyk:
     - "Static Code Analyzer"
   type: "static"
   description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
-  docker: "appsecpipeline/node:1.0"
+  docker: "appsecpipeline/node:1.1"
   url: https://snyk.io/
   documentation: https://snyk.io/docs/
   parameters:
@@ -656,7 +656,7 @@ tenableio:
   description: "Cloud-based Cyber Exposure platform for modern assets - from IT to cloud to IoT and OT."
   url: https://www.tenable.com/products/tenable-io
   documentation: https://docs.tenable.com/TenableIO.htm
-  docker: appsecpipeline/base-tools:1.0
+  docker: "appsecpipeline/base-tools:1.0"
   parameters:
     TARGET:
       type: runtime
