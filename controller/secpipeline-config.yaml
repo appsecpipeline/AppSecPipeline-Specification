@@ -183,7 +183,7 @@ checkmarx:
   description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
   url: https://www.checkmarx.com/technology/static-code-analysis-sca/
   documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
-  docker: "appsecpipeline/base-tools:1.1"
+  docker: "appsecpipeline/base-tools:1.3"
   parameters:
     LOC:
       type: runtime
@@ -532,7 +532,7 @@ retirejs:
     - "Components with known Vulnerabilities"
   type: "static"
   description: "There is a plethora of JavaScript libraries for use on the Web and in Node.JS apps out there. This greatly simplifies development,but we need to stay up-to-date on security fixes. Using 'Components with Known Vulnerabilities' is now a part of the OWASP Top 10 list of security risks and insecure libraries can pose a huge risk to your Web app. The goal of Retire.js is to help you detect the use of JS-library versions with known vulnerabilities."
-  docker: "appsecpipeline/node:1.0"
+  docker: "appsecpipeline/node:1.1"
   url: https://retirejs.github.io/retire.js/
   documentation: https://github.com/RetireJS/retire.js
   parameters:

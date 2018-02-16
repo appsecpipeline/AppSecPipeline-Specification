@@ -24,8 +24,8 @@ class PyCheckmarx(object):
 	DEBUG = False
 	configPath = "config/"
 	errorLog = []
-	ttlReport = 50
-	timeWaitReport = 30
+	ttlReport = 900
+	timeWaitReport = 60
 	ssl._create_default_https_context = ssl._create_unverified_context
 	#
 	# Init Function
