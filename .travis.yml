@@ -12,11 +12,11 @@ env:
     - PIPELINE_BUILD='base'
       DOCKER_FILE='base/dockerfile-base'
       REPO='appsecpipeline/base'
-      DOCKER_VESION='1.2'
+      DOCKER_VESION='1.3'
     - PIPELINE_BUILD='basetools'
       DOCKER_FILE='base/dockerfile-base-tools'
       REPO='appsecpipeline/base-tools'
-      DOCKER_VESION='1.0'
+      DOCKER_VESION='1.4'
     - PIPELINE_BUILD=sast
       DOCKER_FILE='base/dockerfile-sast'
       REPO='appsecpipeline/sast'
@@ -24,7 +24,7 @@ env:
     - PIPELINE_BUILD=node
       DOCKER_FILE='base/dockerfile-node'
       REPO='appsecpipeline/node'
-      DOCKER_VESION='1.0'
+      DOCKER_VESION='1.1'
     - PIPELINE_BUILD=ruby
       DOCKER_FILE='base/dockerfile-ruby'
       REPO='appsecpipeline/ruby'

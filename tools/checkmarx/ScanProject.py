@@ -21,5 +21,17 @@ if __name__ == '__main__':
 
 	pyC = PyCheckmarx.PyCheckmarx(args.username, args.password, args.url)
 	runID = pyC.scanExistingProject(args.project, args.source)
-	scanID = pyC.getStatusOfSingleScan(runID)
-	pyC.getXMLReport(scanID, args.report)
+	scanID, message = pyC.getStatusOfSingleScan(runID)
+
+	#Check for re-scan as incremental changes require full re-scan
+	if message == "FullScan":
+		print "Re-submitting as full scan"
+		runID = pyC.scanExistingProject(args.project, args.source, incremental=False)
+		scanID, message = pyC.getStatusOfSingleScan(runID)
+
+	if scanID is not None:
+		pyC.getXMLReport(scanID, args.report)
+	else:
+		print "Review the scan logs, a scanID was not returned."
+
+	print "Checkmarx complete"
