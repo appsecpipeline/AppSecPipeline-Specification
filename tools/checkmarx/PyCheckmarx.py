@@ -192,7 +192,7 @@ class PyCheckmarx(object):
 
 		return file_paths
 
-	def scanExistingProject(self, ProjectId, directory):
+	def scanExistingProject(self, ProjectId, directory, incremental=True):
 		config = self.client.service.GetProjectConfiguration(self.sessionId, ProjectId)
 
 		localCodeContainer = self.client.factory.create("LocalCodeContainer")
@@ -213,11 +213,18 @@ class PyCheckmarx(object):
 		localCodeContainer.FileName = str(uuid.uuid4()) + ".zip"
 		os.remove(tempZip)
 
-		RunScanAndAddToProject = self.client.factory.create("RunScanAndAddToProject")
-		RunScanAndAddToProject.visibleToUtherUsers = True
-		RunScanAndAddToProject.isPublicScan = True
+		if incremental:
+			RunScanAndAddToProject = self.client.factory.create("RunIncrementalScan")
+			RunScanAndAddToProject.visibleToUtherUsers = True
+			RunScanAndAddToProject.isPublicScan = True
 
-		tmp = self.client.service.RunScanAndAddToProject(self.sessionId, config.ProjectConfig.ProjectSettings,localCodeContainer,RunScanAndAddToProject.visibleToUtherUsers, RunScanAndAddToProject.isPublicScan)
+			tmp = self.client.service.RunIncrementalScan(self.sessionId, config.ProjectConfig.ProjectSettings,localCodeContainer,RunScanAndAddToProject.visibleToUtherUsers, RunScanAndAddToProject.isPublicScan)
+		else:
+			RunScanAndAddToProject = self.client.factory.create("RunScanAndAddToProject")
+			RunScanAndAddToProject.visibleToUtherUsers = True
+			RunScanAndAddToProject.isPublicScan = True
+
+			tmp = self.client.service.RunScanAndAddToProject(self.sessionId, config.ProjectConfig.ProjectSettings,localCodeContainer,RunScanAndAddToProject.visibleToUtherUsers, RunScanAndAddToProject.isPublicScan)
 
 		if not tmp.IsSuccesfull:
 			raise Exception("Unable to get data from the server.")
@@ -230,6 +237,7 @@ class PyCheckmarx(object):
 	def getStatusOfSingleScan(self, RunId):
 
 		ScanId = None
+		Message = None
 		inc = 0
 		while inc < self.ttlReport:
 			inc += 1
@@ -239,6 +247,13 @@ class PyCheckmarx(object):
 
 				if status.CurrentStatus == "Finished":
 					ScanId = status.ScanId
+					Message = "Success"
+					break
+				elif status.CurrentStatus == "Failed" or status.CurrentStatus == "Unknown":
+					if "full scan should be submitted" in status.StageMessage:
+						Message = "FullScan"
+					else:
+						Message = "Unkown"
 					break
 
 			except Exception as e:
@@ -250,7 +265,7 @@ class PyCheckmarx(object):
 		if self.DEBUG:
 			print dir(status)
 
-		return ScanId
+		return ScanId, Message
 
 	#
 	# Get Suppressed Issues
