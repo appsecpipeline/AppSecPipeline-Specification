@@ -183,7 +183,7 @@ checkmarx:
   description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
   url: https://www.checkmarx.com/technology/static-code-analysis-sca/
   documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
-  docker: "appsecpipeline/base-tools:1.3"
+  docker: "appsecpipeline/base-tools:1.4"
   parameters:
     LOC:
       type: runtime
