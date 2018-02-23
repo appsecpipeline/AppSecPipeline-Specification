@@ -16,7 +16,7 @@ env:
     - PIPELINE_BUILD='basetools'
       DOCKER_FILE='base/dockerfile-base-tools'
       REPO='appsecpipeline/base-tools'
-      DOCKER_VESION='1.4'
+      DOCKER_VESION='1.5'
     - PIPELINE_BUILD=sast
       DOCKER_FILE='base/dockerfile-sast'
       REPO='appsecpipeline/sast'

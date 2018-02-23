@@ -225,7 +225,8 @@ def executeTool(toolName, profile_run, credentialedScan, test_mode, auth=None, k
                         logging.info("Warning: Some commands haven't been substituted. Exiting.")
                         logging.info(launchCmd)
                         logging.info("*****************************")
-                        sys.exit(1)
+                        #sys.exit(1)
+                        return
 
                     if not test_mode:
                         if "shell" in commands:

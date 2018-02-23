@@ -9,7 +9,7 @@ checkmarx:
   description: "Checkmarx is a source code analysis product that allows organization to scan uncompiled code and identify vulnerabilities."
   url: https://www.checkmarx.com/technology/static-code-analysis-sca/
   documentation: https://checkmarx.atlassian.net/wiki/spaces/KC/overview
-  docker: "appsecpipeline/base-tools:1.4"
+  docker: "appsecpipeline/base-tools:1.5"
   parameters:
     LOC:
       type: runtime
@@ -42,13 +42,13 @@ checkmarx:
   languages:
     - "ruby"
     - "java"
-    - "c#.net"
+    - "c#"
+    - "f#"
     - "php"
     - "python"
     - "groovy"
     - "android"
-    - "ios"
-    - "html5"
+    - "html"
     - "c++"
     - "vb.net"
     - "vb"
@@ -57,5 +57,19 @@ checkmarx:
     - "apex"
     - "scala"
     - "swift"
+    - "typescript"
+    - "go"
+    - "scala"
+    - "jsp"
+    - "javascript"
+    - "objective c"
+    - "objective c++"
+    - "visual basic"
+    - "perl"
+    - "asp"
+    - "asp.net"
+    - "grails"
+    - "groovy"
+    - "xhtml"
   profiles:
     all: " "
