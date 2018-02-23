@@ -80,8 +80,19 @@ Note: Where possible, a reference to the sequence diagram (pipeline-static.png) 
 
 Currently, event types are not well specified but for an event to cause a pipeline run, the following data is required:
 
-* TBD1
-* TBD2
+* profile - string: named pipeline from master.yaml, appsec.pipeline or {app name}-pipeline.yaml
+* app_name - string: name of the app being tested, for human friendly logging
+* event_type - string: type of event that caused the named pipeine run e.g. command-line, git commit
+* pipeline_type - string: type of pipeline run, currently either "static" or "dynamic"
+
+The data below have defaults and are only required if a non-default value is desired
+
+* dry_run - boolean: default = false - Do this pipeline run without launching actual dockers, etc
+* persist_containers - boolean: default = false - Keep the containers and volumes once a pipeline run in completed
+* app_profile - string: default = "" - application specific pipeline profile to run - usually sent in as a file named {app-name}-pipeline.yaml
+* app_tool_profile - string: default = "" - application specific tool profile to run - usually sent in as a file named {app-name}-tool.yaml
+* target_container - string: default = "" - name of the Docker container which has the target source or running instance
+* local_path - string: default = "" - path to the local directory which contains an apps source code
 
 Events can be as simple as a command line invocation to something as complex as a worker process pulling events off a message queue.  At this time, we're leaving this area open and collecting real world event types to document in future.  At this time, event data can be gathered from the items below listed in diminishing precedence. e.g. environmental variables will override config values.
 
@@ -166,10 +177,12 @@ Constants, conventions and other fixed values in the AppSec Pipeline:
 * Subdirectory for each tools results:
 * * {UUID}_{toolname}
 * * * If multiple runs of same tool, append "-###" to the name starting with -001 for the first match
+* Mount point for source code during SAST runs:
+* * /opt/appsecpipeline/source
 * ID of the default user for AppSec Pipeline docker images:
 * * 1337
 * Name of the default user for AppSec Pipeline docker images:
-* * TBD
+* * appsecpipeline
 * Naming scheme for containers launched during a pipeline run
 * * {UUID}_tool-name for tool containers
 * * {UUID}_results for results containers
@@ -186,3 +199,7 @@ Conventions used when using Defect Dojo as the Vulnerability Repository:
 * Each named pipeline run is an unique engagement in Dojo
 * * Within the engagement, each tool run is a separate test within that engagement
 * TBD
+	//	DojoHost    string   // Required - host name of the Dojo instance to push the run restults to
+	//	DojoApiKey  string   // Required - API key to talk to Dojo's REST API
+	//	DojoProdId  string   // Required - The Product ID from Dojo to submit the results for this test run
+	//	//DojoNewEng boot // default = true - Create a new engagement for each pipeline run?
