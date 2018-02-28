@@ -1,0 +1,438 @@
+
+Prefixes:
+     ns0: http://Checkmarx.com/v7
+     xsd: http://www.w3.org/2001/XMLSchema
+
+Global elements:
+     ns0:BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string)
+     ns0:BranchProjectByIdResponse(BranchProjectByIdResult: ns0:CxWSResponseRunID)
+     ns0:CancelScan(sessionId: xsd:string, runId: xsd:string)
+     ns0:CancelScanReport(sessionId: xsd:string, reportId: xsd:long)
+     ns0:CancelScanReportResponse(CancelScanReportResult: ns0:CxWSBasicRepsonse)
+     ns0:CancelScanResponse(CancelScanResult: ns0:CxWSBasicRepsonse)
+     ns0:CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:CreateAndRunProjectResponse(CreateAndRunProjectResult: ns0:CxWSResponseRunID)
+     ns0:CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest)
+     ns0:CreateScanReportResponse(CreateScanReportResult: ns0:CxWSCreateReportResponse)
+     ns0:GetAssociatedGroupsList(SessionID: xsd:string)
+     ns0:GetAssociatedGroupsListResponse(GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList)
+     ns0:GetConfigurationSetList(SessionID: xsd:string)
+     ns0:GetConfigurationSetListResponse(GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList)
+     ns0:GetPresetList(SessionID: xsd:string)
+     ns0:GetPresetListResponse(GetPresetListResult: ns0:CxWSResponsePresetList)
+     ns0:GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long)
+     ns0:GetProjectConfigurationResponse(GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig)
+     ns0:GetProjectsDisplayData(sessionID: xsd:string)
+     ns0:GetProjectsDisplayDataResponse(GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData)
+     ns0:GetScanReport(SessionID: xsd:string, ReportID: xsd:long)
+     ns0:GetScanReportResponse(GetScanReportResult: ns0:CxWSResponseScanResults)
+     ns0:GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long)
+     ns0:GetScanReportStatusResponse(GetScanReportStatusResult: ns0:CxWSReportStatusResponse)
+     ns0:GetScansStatuses(sessionID: xsd:string)
+     ns0:GetScansStatusesResponse(GetScansStatusesResult: ns0:CxWSResponseScanStatusArray)
+     ns0:GetServerLicenseData(sessionID: xsd:string)
+     ns0:GetServerLicenseDataResponse(GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData)
+     ns0:GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string)
+     ns0:GetStatusOfSingleScanResponse(GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus)
+     ns0:IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string)
+     ns0:IsValidProjectNameResponse(IsValidProjectNameResult: ns0:CxWSBasicRepsonse)
+     ns0:Login(applicationCredentials: ns0:Credentials, lcid: xsd:int)
+     ns0:LoginResponse(LoginResult: ns0:CxWSResponseLoginData)
+     ns0:RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:RunIncrementalScanResponse(RunIncrementalScanResult: ns0:CxWSResponseRunID)
+     ns0:RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:RunScanAndAddToProjectResponse(RunScanAndAddToProjectResult: ns0:CxWSResponseRunID)
+     ns0:Scan(sessionId: xsd:string, args: ns0:CliScanArgs)
+     ns0:ScanResponse(ScanResult: ns0:CxWSResponseRunID)
+     
+
+Global types:
+     xsd:anyType
+     ns0:ArrayOfConfigurationSet(ConfigurationSet: ns0:ConfigurationSet[])
+     ns0:ArrayOfCxWSIssueTrackingParam(CxWSIssueTrackingParam: ns0:CxWSIssueTrackingParam[])
+     ns0:ArrayOfCxWSProjectCustomField(CxWSProjectCustomField: ns0:CxWSProjectCustomField[])
+     ns0:ArrayOfCxWSResponseScanStatus(CxWSResponseScanStatus: ns0:CxWSResponseScanStatus[])
+     ns0:ArrayOfDayOfWeek(DayOfWeek: ns0:DayOfWeek[])
+     ns0:ArrayOfGroup(Group: ns0:Group[])
+     ns0:ArrayOfPreset(Preset: ns0:Preset[])
+     ns0:ArrayOfProjectDisplayData(ProjectDisplayData: ns0:ProjectDisplayData[])
+     ns0:ArrayOfScanAction(ScanAction: ns0:ScanAction[])
+     ns0:ArrayOfScanPath(ScanPath: ns0:ScanPath[])
+     ns0:ArrayOfString(string: xsd:string[])
+     ns0:ArrayOfSupportedLanguage(SupportedLanguage: ns0:SupportedLanguage[])
+     ns0:CliScanArgs(PrjSettings: ns0:ProjectSettings, SrcCodeSettings: ns0:SourceCodeSettings, IsPrivateScan: xsd:boolean, IsIncremental: xsd:boolean, Comment: xsd:string, IgnoreScanWithUnchangedCode: xsd:boolean, ClientOrigin: ns0:CxClientType)
+     ns0:ConfigurationSet(ConfigSetName: xsd:string, ID: xsd:long)
+     ns0:Credentials(User: xsd:string, Pass: xsd:string)
+     ns0:CurrentStatusEnum
+     ns0:CxClientType
+     ns0:CxDateTime(Hour: xsd:int, Minute: xsd:int, Second: xsd:int, Day: xsd:int, Month: xsd:int, Year: xsd:int)
+     ns0:CxWSBasicRepsonse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string)
+     ns0:CxWSCreateReportResponse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ID: xsd:long)
+     ns0:CxWSIssueTrackingParam(Name: xsd:string, Value: xsd:anyType, Type: xsd:string)
+     ns0:CxWSPerforceBrowsingMode
+     ns0:CxWSProjectCustomField(CustomFieldId: xsd:long, Value: xsd:string)
+     ns0:CxWSProjectIssueTrackingSettings(TrackingSystemID: xsd:long, Params: ns0:ArrayOfCxWSIssueTrackingParam)
+     ns0:CxWSReportRequest(Type: ns0:CxWSReportType, ScanID: xsd:long)
+     ns0:CxWSReportStatusResponse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, IsReady: xsd:boolean, IsFailed: xsd:boolean)
+     ns0:CxWSReportType
+     ns0:CxWSResponseCompaniesLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int)
+     ns0:CxWSResponseConfigSetList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ConfigSetList: ns0:ArrayOfConfigurationSet)
+     ns0:CxWSResponseGroupList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, GroupList: ns0:ArrayOfGroup)
+     ns0:CxWSResponseLoginData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, SessionId: xsd:string, FamilyName: xsd:string, FirstName: xsd:string, UserName: xsd:string, Email: xsd:string, UserID: xsd:long, UserPreferedLanguageLCID: xsd:int, IsAllowedToCreateProject: xsd:boolean, IsAllowedToChangeProject: xsd:boolean, IsAllowedToManageUsers: xsd:boolean, IsAllowedToViewCompanies: xsd:boolean, IsAllowedToManageCompanies: xsd:boolean, IsAllowedToManageServer: xsd:boolean, IsAllowedToViewInstallationData: xsd:boolean, IsAllowedToViewSp: xsd:boolean, IsAllowedToManageSp: xsd:boolean, IsScanner: xsd:boolean, IsAuditor: xsd:boolean, IsAllowedToManagePresets: xsd:boolean, isAllowedToManagePredefinedCommand: xsd:boolean, IsAllowedToManagePostScanAction: xsd:boolean, IsAllowedToModifyResultDetails: xsd:boolean, EnableIncrementalScan: xsd:boolean, ShowSaaSPackageNotificationAndErrors: xsd:boolean, ShowSaaSPackageDetails: xsd:boolean, IsAdviseChangePassword: xsd:boolean, IsAllowedToManageITSServers: xsd:boolean, AllowedToChangeNotExploitable: xsd:boolean, IsAllowedToDeleteScans: xsd:boolean)
+     ns0:CxWSResponsePresetList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, PresetList: ns0:ArrayOfPreset)
+     ns0:CxWSResponseProjectConfig(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ProjectConfig: ns0:ProjectConfiguration, Permission: ns0:UserPermission)
+     ns0:CxWSResponseProjectsDisplayData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, projectList: ns0:ArrayOfProjectDisplayData)
+     ns0:CxWSResponseRunID(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ProjectID: xsd:long, RunId: xsd:string)
+     ns0:CxWSResponseSPLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int)
+     ns0:CxWSResponseScanResults(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ScanResults: xsd:base64Binary, containsAllResults: xsd:boolean)
+     ns0:CxWSResponseScanStatus(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, CurrentStage: xsd:int, QueuePosition: xsd:int, TotalPercent: xsd:int, CurrentStagePercent: xsd:int, Owner: xsd:string, StageName: xsd:string, StageMessage: xsd:string, StepMessage: xsd:string, StepDetails: xsd:string, ResultId: xsd:long, ScanId: xsd:long, ProjectId: xsd:long, TaskId: xsd:long, TaskName: xsd:string, ProjectName: xsd:string, RunId: xsd:string, SourceId: xsd:string, LOC: xsd:long, TimeScheduled: ns0:CxDateTime, ElapsedTime: ns0:CxDateTime, TimeFinished: ns0:CxDateTime, TimeBeginWorking: ns0:CxDateTime, CurrentStatus: ns0:CurrentStatusEnum, ServerName: xsd:string, Origin: xsd:string, IsPublic: xsd:boolean, PartialResults: xsd:boolean)
+     ns0:CxWSResponseScanStatusArray(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, statusArr: ns0:ArrayOfCxWSResponseScanStatus)
+     ns0:CxWSResponseServerLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int, MaxServerManagers: xsd:int, CurrentServerManagers: xsd:int, MaxServerManagersWithAudit: xsd:int, CurrentServerManagersWithAudit: xsd:int, ExpirationDate: xsd:string, MaxConcurrentScans: xsd:string, MaxLOC: xsd:string, HID: xsd:string, SupportedLanguages: ns0:ArrayOfSupportedLanguage, MaxUsers: xsd:int, CurrentUsers: xsd:int, MaxAuditUsers: xsd:int, CurrentAuditUsers: xsd:int, IsOsaEnabled: xsd:boolean, OsaExpirationDate: xsd:string, Edition: ns0:LicenseEdition, ProjectsAllowed: xsd:long, CurrentProjectsCount: xsd:long)
+     ns0:CxWSResponseServerManagersLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int, MaxServerManagers: xsd:int, CurrentServerManagers: xsd:int, MaxServerManagersWithAudit: xsd:int, CurrentServerManagersWithAudit: xsd:int)
+     ns0:CxWSResponseSessionID(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, SessionId: xsd:string)
+     ns0:CxWSResponseUsersLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int)
+     ns0:DataRetentionSettings(NumOfScansToKeep: xsd:int)
+     ns0:DayOfWeek
+     ns0:GitHubIntegrationSettings(ContributorCredentials: ns0:Credentials, OwnerCredentials: ns0:Credentials, EventsThreshold: xsd:int)
+     ns0:GitLsRemoteViewType
+     ns0:Group(GroupName: xsd:string, ID: xsd:string, Type: ns0:GroupType, Guid: xsd:string, FullPath: xsd:string, Path: xsd:string)
+     ns0:GroupType
+     ns0:LicenseEdition
+     ns0:LocalCodeContainer(ZippedFile: xsd:base64Binary, FileName: xsd:string)
+     ns0:Preset(PresetName: xsd:string, ID: xsd:long, owningUser: xsd:string, isUserAllowToUpdate: xsd:boolean, isUserAllowToDelete: xsd:boolean)
+     ns0:ProjectConfiguration(ProjectSettings: ns0:ProjectSettings, SourceCodeSettings: ns0:SourceCodeSettings, ScheduleSettings: ns0:ScheduleSettings, ScanActionSettings: ns0:ScanActionSettings, ProjectIssueTrackingSettings: ns0:CxWSProjectIssueTrackingSettings, CustomFields: ns0:ArrayOfCxWSProjectCustomField, DataRetentionSettings: ns0:DataRetentionSettings)
+     ns0:ProjectDisplayData(Permission: ns0:UserPermission, projectID: xsd:long, ServiceProvider: xsd:string, Company: xsd:string, Owner: xsd:string, ProjectName: xsd:string, Group: xsd:string, Preset: xsd:string, LastScanDate: ns0:CxDateTime, TotalScans: xsd:int, IsPublic: xsd:boolean, TotalOsaScans: xsd:int)
+     ns0:ProjectOrigin
+     ns0:ProjectSettings(projectID: xsd:long, ProjectName: xsd:string, PresetID: xsd:long, AssociatedGroupID: xsd:string, ScanConfigurationID: xsd:long, Description: xsd:string, Owner: xsd:string, IsPublic: xsd:boolean, OpenSourceSettings: ns0:ProjectSharedLocation, OpenSourceAnalysisOrigin: ns0:ProjectOrigin)
+     ns0:ProjectSharedLocation(Path: ns0:ArrayOfString, Credentials: ns0:Credentials)
+     ns0:RepositoryType
+     ns0:ScanAction(Parameters: ns0:ArrayOfString, Trigger: ns0:ScanEventType, Action: ns0:ScanActionType)
+     ns0:ScanActionSettings(ScanActionList: ns0:ArrayOfScanAction)
+     ns0:ScanActionType
+     ns0:ScanEventType
+     ns0:ScanPath(Path: xsd:string, IncludeSubTree: xsd:boolean)
+     ns0:ScheduleSettings(Schedule: ns0:ScheduleType, ScheduledDays: ns0:ArrayOfDayOfWeek, Time: ns0:CxDateTime, StartSchedulingPeriod: ns0:CxDateTime, EndSchedulingPeriod: ns0:CxDateTime, SchedulingFrequency: xsd:int)
+     ns0:ScheduleType
+     ns0:SourceCodeSettings(SourceOrigin: ns0:SourceLocationType, UserCredentials: ns0:Credentials, PathList: ns0:ArrayOfScanPath, SourceControlSetting: ns0:SourceControlSettings, PackagedCode: ns0:LocalCodeContainer, SourcePullingAction: xsd:string, SourceFilterLists: ns0:SourceFilterPatterns)
+     ns0:SourceControlProtocolType
+     ns0:SourceControlSettings(Port: xsd:int, UseSSL: xsd:boolean, UseSSH: xsd:boolean, ServerName: xsd:string, Repository: ns0:RepositoryType, UserCredentials: ns0:Credentials, Protocol: ns0:SourceControlProtocolType, RepositoryName: xsd:string, ProtocolParameters: xsd:string, GITBranch: xsd:string, GitLsViewType: ns0:GitLsRemoteViewType, SSHPublicKey: xsd:string, SSHPrivateKey: xsd:string, GitHubSettings: ns0:GitHubIntegrationSettings, PerforceBrowsingMode: ns0:CxWSPerforceBrowsingMode)
+     ns0:SourceFilterPatterns(ExcludeFilesPatterns: xsd:string, ExcludeFoldersPatterns: xsd:string)
+     ns0:SourceLocationType
+     ns0:SupportedLanguage(language: xsd:string, isSupported: xsd:boolean)
+     ns0:UserPermission(IsAllowedToDelete: xsd:boolean, IsAllowedToDuplicate: xsd:boolean, IsAllowedToRun: xsd:boolean, IsAllowedToUpdate: xsd:boolean)
+     xsd:ENTITIES
+     xsd:ENTITY
+     xsd:ID
+     xsd:IDREF
+     xsd:IDREFS
+     xsd:NCName
+     xsd:NMTOKEN
+     xsd:NMTOKENS
+     xsd:NOTATION
+     xsd:Name
+     xsd:QName
+     xsd:anySimpleType
+     xsd:anyURI
+     xsd:base64Binary
+     xsd:boolean
+     xsd:byte
+     xsd:date
+     xsd:dateTime
+     xsd:decimal
+     xsd:double
+     xsd:duration
+     xsd:float
+     xsd:gDay
+     xsd:gMonth
+     xsd:gMonthDay
+     xsd:gYear
+     xsd:gYearMonth
+     xsd:hexBinary
+     xsd:int
+     xsd:integer
+     xsd:language
+     xsd:long
+     xsd:negativeInteger
+     xsd:nonNegativeInteger
+     xsd:nonPositiveInteger
+     xsd:normalizedString
+     xsd:positiveInteger
+     xsd:short
+     xsd:string
+     xsd:time
+     xsd:token
+     xsd:unsignedByte
+     xsd:unsignedInt
+     xsd:unsignedLong
+     xsd:unsignedShort
+
+Bindings:
+     Soap11Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap
+     Soap12Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap12
+
+Service: CxJenkinsWebService
+     Port: CxJenkinsWebServiceSoap (Soap11Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap)
+         Operations:
+            BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string) -> BranchProjectByIdResult: ns0:CxWSResponseRunID
+            CancelScan(sessionId: xsd:string, runId: xsd:string) -> CancelScanResult: ns0:CxWSBasicRepsonse
+            CancelScanReport(sessionId: xsd:string, reportId: xsd:long) -> CancelScanReportResult: ns0:CxWSBasicRepsonse
+            CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> CreateAndRunProjectResult: ns0:CxWSResponseRunID
+            CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest) -> CreateScanReportResult: ns0:CxWSCreateReportResponse
+            GetAssociatedGroupsList(SessionID: xsd:string) -> GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList
+            GetConfigurationSetList(SessionID: xsd:string) -> GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList
+            GetPresetList(SessionID: xsd:string) -> GetPresetListResult: ns0:CxWSResponsePresetList
+            GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long) -> GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig
+            GetProjectsDisplayData(sessionID: xsd:string) -> GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData
+            GetScanReport(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportResult: ns0:CxWSResponseScanResults
+            GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportStatusResult: ns0:CxWSReportStatusResponse
+            GetScansStatuses(sessionID: xsd:string) -> GetScansStatusesResult: ns0:CxWSResponseScanStatusArray
+            GetServerLicenseData(sessionID: xsd:string) -> GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData
+            GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string) -> GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus
+            IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string) -> IsValidProjectNameResult: ns0:CxWSBasicRepsonse
+            Login(applicationCredentials: ns0:Credentials, lcid: xsd:int) -> LoginResult: ns0:CxWSResponseLoginData
+            RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunIncrementalScanResult: ns0:CxWSResponseRunID
+            RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunScanAndAddToProjectResult: ns0:CxWSResponseRunID
+            Scan(sessionId: xsd:string, args: ns0:CliScanArgs) -> ScanResult: ns0:CxWSResponseRunID
+
+     Port: CxJenkinsWebServiceSoap12 (Soap12Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap12)
+         Operations:
+            BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string) -> BranchProjectByIdResult: ns0:CxWSResponseRunID
+            CancelScan(sessionId: xsd:string, runId: xsd:string) -> CancelScanResult: ns0:CxWSBasicRepsonse
+            CancelScanReport(sessionId: xsd:string, reportId: xsd:long) -> CancelScanReportResult: ns0:CxWSBasicRepsonse
+            CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> CreateAndRunProjectResult: ns0:CxWSResponseRunID
+            CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest) -> CreateScanReportResult: ns0:CxWSCreateReportResponse
+            GetAssociatedGroupsList(SessionID: xsd:string) -> GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList
+            GetConfigurationSetList(SessionID: xsd:string) -> GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList
+            GetPresetList(SessionID: xsd:string) -> GetPresetListResult: ns0:CxWSResponsePresetList
+            GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long) -> GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig
+            GetProjectsDisplayData(sessionID: xsd:string) -> GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData
+            GetScanReport(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportResult: ns0:CxWSResponseScanResults
+            GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportStatusResult: ns0:CxWSReportStatusResponse
+            GetScansStatuses(sessionID: xsd:string) -> GetScansStatusesResult: ns0:CxWSResponseScanStatusArray
+            GetServerLicenseData(sessionID: xsd:string) -> GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData
+            GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string) -> GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus
+            IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string) -> IsValidProjectNameResult: ns0:CxWSBasicRepsonse
+            Login(applicationCredentials: ns0:Credentials, lcid: xsd:int) -> LoginResult: ns0:CxWSResponseLoginData
+            RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunIncrementalScanResult: ns0:CxWSResponseRunID
+            RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunScanAndAddToProjectResult: ns0:CxWSResponseRunID
+            Scan(sessionId: xsd:string, args: ns0:CliScanArgs) -> ScanResult: ns0:CxWSResponseRunID
+
+
+Prefixes:
+     ns0: http://Checkmarx.com/v7
+     xsd: http://www.w3.org/2001/XMLSchema
+
+Global elements:
+     ns0:BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string)
+     ns0:BranchProjectByIdResponse(BranchProjectByIdResult: ns0:CxWSResponseRunID)
+     ns0:CancelScan(sessionId: xsd:string, runId: xsd:string)
+     ns0:CancelScanReport(sessionId: xsd:string, reportId: xsd:long)
+     ns0:CancelScanReportResponse(CancelScanReportResult: ns0:CxWSBasicRepsonse)
+     ns0:CancelScanResponse(CancelScanResult: ns0:CxWSBasicRepsonse)
+     ns0:CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:CreateAndRunProjectResponse(CreateAndRunProjectResult: ns0:CxWSResponseRunID)
+     ns0:CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest)
+     ns0:CreateScanReportResponse(CreateScanReportResult: ns0:CxWSCreateReportResponse)
+     ns0:GetAssociatedGroupsList(SessionID: xsd:string)
+     ns0:GetAssociatedGroupsListResponse(GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList)
+     ns0:GetConfigurationSetList(SessionID: xsd:string)
+     ns0:GetConfigurationSetListResponse(GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList)
+     ns0:GetPresetList(SessionID: xsd:string)
+     ns0:GetPresetListResponse(GetPresetListResult: ns0:CxWSResponsePresetList)
+     ns0:GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long)
+     ns0:GetProjectConfigurationResponse(GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig)
+     ns0:GetProjectsDisplayData(sessionID: xsd:string)
+     ns0:GetProjectsDisplayDataResponse(GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData)
+     ns0:GetScanReport(SessionID: xsd:string, ReportID: xsd:long)
+     ns0:GetScanReportResponse(GetScanReportResult: ns0:CxWSResponseScanResults)
+     ns0:GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long)
+     ns0:GetScanReportStatusResponse(GetScanReportStatusResult: ns0:CxWSReportStatusResponse)
+     ns0:GetScansStatuses(sessionID: xsd:string)
+     ns0:GetScansStatusesResponse(GetScansStatusesResult: ns0:CxWSResponseScanStatusArray)
+     ns0:GetServerLicenseData(sessionID: xsd:string)
+     ns0:GetServerLicenseDataResponse(GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData)
+     ns0:GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string)
+     ns0:GetStatusOfSingleScanResponse(GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus)
+     ns0:IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string)
+     ns0:IsValidProjectNameResponse(IsValidProjectNameResult: ns0:CxWSBasicRepsonse)
+     ns0:Login(applicationCredentials: ns0:Credentials, lcid: xsd:int)
+     ns0:LoginResponse(LoginResult: ns0:CxWSResponseLoginData)
+     ns0:RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:RunIncrementalScanResponse(RunIncrementalScanResult: ns0:CxWSResponseRunID)
+     ns0:RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string)
+     ns0:RunScanAndAddToProjectResponse(RunScanAndAddToProjectResult: ns0:CxWSResponseRunID)
+     ns0:Scan(sessionId: xsd:string, args: ns0:CliScanArgs)
+     ns0:ScanResponse(ScanResult: ns0:CxWSResponseRunID)
+     
+
+Global types:
+     xsd:anyType
+     ns0:ArrayOfConfigurationSet(ConfigurationSet: ns0:ConfigurationSet[])
+     ns0:ArrayOfCxWSIssueTrackingParam(CxWSIssueTrackingParam: ns0:CxWSIssueTrackingParam[])
+     ns0:ArrayOfCxWSProjectCustomField(CxWSProjectCustomField: ns0:CxWSProjectCustomField[])
+     ns0:ArrayOfCxWSResponseScanStatus(CxWSResponseScanStatus: ns0:CxWSResponseScanStatus[])
+     ns0:ArrayOfDayOfWeek(DayOfWeek: ns0:DayOfWeek[])
+     ns0:ArrayOfGroup(Group: ns0:Group[])
+     ns0:ArrayOfPreset(Preset: ns0:Preset[])
+     ns0:ArrayOfProjectDisplayData(ProjectDisplayData: ns0:ProjectDisplayData[])
+     ns0:ArrayOfScanAction(ScanAction: ns0:ScanAction[])
+     ns0:ArrayOfScanPath(ScanPath: ns0:ScanPath[])
+     ns0:ArrayOfString(string: xsd:string[])
+     ns0:ArrayOfSupportedLanguage(SupportedLanguage: ns0:SupportedLanguage[])
+     ns0:CliScanArgs(PrjSettings: ns0:ProjectSettings, SrcCodeSettings: ns0:SourceCodeSettings, IsPrivateScan: xsd:boolean, IsIncremental: xsd:boolean, Comment: xsd:string, IgnoreScanWithUnchangedCode: xsd:boolean, ClientOrigin: ns0:CxClientType)
+     ns0:ConfigurationSet(ConfigSetName: xsd:string, ID: xsd:long)
+     ns0:Credentials(User: xsd:string, Pass: xsd:string)
+     ns0:CurrentStatusEnum
+     ns0:CxClientType
+     ns0:CxDateTime(Hour: xsd:int, Minute: xsd:int, Second: xsd:int, Day: xsd:int, Month: xsd:int, Year: xsd:int)
+     ns0:CxWSBasicRepsonse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string)
+     ns0:CxWSCreateReportResponse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ID: xsd:long)
+     ns0:CxWSIssueTrackingParam(Name: xsd:string, Value: xsd:anyType, Type: xsd:string)
+     ns0:CxWSPerforceBrowsingMode
+     ns0:CxWSProjectCustomField(CustomFieldId: xsd:long, Value: xsd:string)
+     ns0:CxWSProjectIssueTrackingSettings(TrackingSystemID: xsd:long, Params: ns0:ArrayOfCxWSIssueTrackingParam)
+     ns0:CxWSReportRequest(Type: ns0:CxWSReportType, ScanID: xsd:long)
+     ns0:CxWSReportStatusResponse(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, IsReady: xsd:boolean, IsFailed: xsd:boolean)
+     ns0:CxWSReportType
+     ns0:CxWSResponseCompaniesLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int)
+     ns0:CxWSResponseConfigSetList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ConfigSetList: ns0:ArrayOfConfigurationSet)
+     ns0:CxWSResponseGroupList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, GroupList: ns0:ArrayOfGroup)
+     ns0:CxWSResponseLoginData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, SessionId: xsd:string, FamilyName: xsd:string, FirstName: xsd:string, UserName: xsd:string, Email: xsd:string, UserID: xsd:long, UserPreferedLanguageLCID: xsd:int, IsAllowedToCreateProject: xsd:boolean, IsAllowedToChangeProject: xsd:boolean, IsAllowedToManageUsers: xsd:boolean, IsAllowedToViewCompanies: xsd:boolean, IsAllowedToManageCompanies: xsd:boolean, IsAllowedToManageServer: xsd:boolean, IsAllowedToViewInstallationData: xsd:boolean, IsAllowedToViewSp: xsd:boolean, IsAllowedToManageSp: xsd:boolean, IsScanner: xsd:boolean, IsAuditor: xsd:boolean, IsAllowedToManagePresets: xsd:boolean, isAllowedToManagePredefinedCommand: xsd:boolean, IsAllowedToManagePostScanAction: xsd:boolean, IsAllowedToModifyResultDetails: xsd:boolean, EnableIncrementalScan: xsd:boolean, ShowSaaSPackageNotificationAndErrors: xsd:boolean, ShowSaaSPackageDetails: xsd:boolean, IsAdviseChangePassword: xsd:boolean, IsAllowedToManageITSServers: xsd:boolean, AllowedToChangeNotExploitable: xsd:boolean, IsAllowedToDeleteScans: xsd:boolean)
+     ns0:CxWSResponsePresetList(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, PresetList: ns0:ArrayOfPreset)
+     ns0:CxWSResponseProjectConfig(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ProjectConfig: ns0:ProjectConfiguration, Permission: ns0:UserPermission)
+     ns0:CxWSResponseProjectsDisplayData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, projectList: ns0:ArrayOfProjectDisplayData)
+     ns0:CxWSResponseRunID(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ProjectID: xsd:long, RunId: xsd:string)
+     ns0:CxWSResponseSPLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int)
+     ns0:CxWSResponseScanResults(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, ScanResults: xsd:base64Binary, containsAllResults: xsd:boolean)
+     ns0:CxWSResponseScanStatus(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, CurrentStage: xsd:int, QueuePosition: xsd:int, TotalPercent: xsd:int, CurrentStagePercent: xsd:int, Owner: xsd:string, StageName: xsd:string, StageMessage: xsd:string, StepMessage: xsd:string, StepDetails: xsd:string, ResultId: xsd:long, ScanId: xsd:long, ProjectId: xsd:long, TaskId: xsd:long, TaskName: xsd:string, ProjectName: xsd:string, RunId: xsd:string, SourceId: xsd:string, LOC: xsd:long, TimeScheduled: ns0:CxDateTime, ElapsedTime: ns0:CxDateTime, TimeFinished: ns0:CxDateTime, TimeBeginWorking: ns0:CxDateTime, CurrentStatus: ns0:CurrentStatusEnum, ServerName: xsd:string, Origin: xsd:string, IsPublic: xsd:boolean, PartialResults: xsd:boolean)
+     ns0:CxWSResponseScanStatusArray(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, statusArr: ns0:ArrayOfCxWSResponseScanStatus)
+     ns0:CxWSResponseServerLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int, MaxServerManagers: xsd:int, CurrentServerManagers: xsd:int, MaxServerManagersWithAudit: xsd:int, CurrentServerManagersWithAudit: xsd:int, ExpirationDate: xsd:string, MaxConcurrentScans: xsd:string, MaxLOC: xsd:string, HID: xsd:string, SupportedLanguages: ns0:ArrayOfSupportedLanguage, MaxUsers: xsd:int, CurrentUsers: xsd:int, MaxAuditUsers: xsd:int, CurrentAuditUsers: xsd:int, IsOsaEnabled: xsd:boolean, OsaExpirationDate: xsd:string, Edition: ns0:LicenseEdition, ProjectsAllowed: xsd:long, CurrentProjectsCount: xsd:long)
+     ns0:CxWSResponseServerManagersLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int, MaxCompanyManagers: xsd:int, CurrentCompanyManagers: xsd:int, MaxCompanyManagersWithAudit: xsd:int, CurrentCompanyManagersWithAudit: xsd:int, MaxCompanies: xsd:int, CurrentCompanies: xsd:int, MaxSPManagers: xsd:int, CurrentSPManagers: xsd:int, CurrentSPs: xsd:int, MaxSPs: xsd:int, MaxServerManagers: xsd:int, CurrentServerManagers: xsd:int, MaxServerManagersWithAudit: xsd:int, CurrentServerManagersWithAudit: xsd:int)
+     ns0:CxWSResponseSessionID(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, SessionId: xsd:string)
+     ns0:CxWSResponseUsersLicenseData(IsSuccesfull: xsd:boolean, ErrorMessage: xsd:string, MaxReviewers: xsd:int, CurrentReviewers: xsd:int, MaxScanners: xsd:int, CurrentScanners: xsd:int)
+     ns0:DataRetentionSettings(NumOfScansToKeep: xsd:int)
+     ns0:DayOfWeek
+     ns0:GitHubIntegrationSettings(ContributorCredentials: ns0:Credentials, OwnerCredentials: ns0:Credentials, EventsThreshold: xsd:int)
+     ns0:GitLsRemoteViewType
+     ns0:Group(GroupName: xsd:string, ID: xsd:string, Type: ns0:GroupType, Guid: xsd:string, FullPath: xsd:string, Path: xsd:string)
+     ns0:GroupType
+     ns0:LicenseEdition
+     ns0:LocalCodeContainer(ZippedFile: xsd:base64Binary, FileName: xsd:string)
+     ns0:Preset(PresetName: xsd:string, ID: xsd:long, owningUser: xsd:string, isUserAllowToUpdate: xsd:boolean, isUserAllowToDelete: xsd:boolean)
+     ns0:ProjectConfiguration(ProjectSettings: ns0:ProjectSettings, SourceCodeSettings: ns0:SourceCodeSettings, ScheduleSettings: ns0:ScheduleSettings, ScanActionSettings: ns0:ScanActionSettings, ProjectIssueTrackingSettings: ns0:CxWSProjectIssueTrackingSettings, CustomFields: ns0:ArrayOfCxWSProjectCustomField, DataRetentionSettings: ns0:DataRetentionSettings)
+     ns0:ProjectDisplayData(Permission: ns0:UserPermission, projectID: xsd:long, ServiceProvider: xsd:string, Company: xsd:string, Owner: xsd:string, ProjectName: xsd:string, Group: xsd:string, Preset: xsd:string, LastScanDate: ns0:CxDateTime, TotalScans: xsd:int, IsPublic: xsd:boolean, TotalOsaScans: xsd:int)
+     ns0:ProjectOrigin
+     ns0:ProjectSettings(projectID: xsd:long, ProjectName: xsd:string, PresetID: xsd:long, AssociatedGroupID: xsd:string, ScanConfigurationID: xsd:long, Description: xsd:string, Owner: xsd:string, IsPublic: xsd:boolean, OpenSourceSettings: ns0:ProjectSharedLocation, OpenSourceAnalysisOrigin: ns0:ProjectOrigin)
+     ns0:ProjectSharedLocation(Path: ns0:ArrayOfString, Credentials: ns0:Credentials)
+     ns0:RepositoryType
+     ns0:ScanAction(Parameters: ns0:ArrayOfString, Trigger: ns0:ScanEventType, Action: ns0:ScanActionType)
+     ns0:ScanActionSettings(ScanActionList: ns0:ArrayOfScanAction)
+     ns0:ScanActionType
+     ns0:ScanEventType
+     ns0:ScanPath(Path: xsd:string, IncludeSubTree: xsd:boolean)
+     ns0:ScheduleSettings(Schedule: ns0:ScheduleType, ScheduledDays: ns0:ArrayOfDayOfWeek, Time: ns0:CxDateTime, StartSchedulingPeriod: ns0:CxDateTime, EndSchedulingPeriod: ns0:CxDateTime, SchedulingFrequency: xsd:int)
+     ns0:ScheduleType
+     ns0:SourceCodeSettings(SourceOrigin: ns0:SourceLocationType, UserCredentials: ns0:Credentials, PathList: ns0:ArrayOfScanPath, SourceControlSetting: ns0:SourceControlSettings, PackagedCode: ns0:LocalCodeContainer, SourcePullingAction: xsd:string, SourceFilterLists: ns0:SourceFilterPatterns)
+     ns0:SourceControlProtocolType
+     ns0:SourceControlSettings(Port: xsd:int, UseSSL: xsd:boolean, UseSSH: xsd:boolean, ServerName: xsd:string, Repository: ns0:RepositoryType, UserCredentials: ns0:Credentials, Protocol: ns0:SourceControlProtocolType, RepositoryName: xsd:string, ProtocolParameters: xsd:string, GITBranch: xsd:string, GitLsViewType: ns0:GitLsRemoteViewType, SSHPublicKey: xsd:string, SSHPrivateKey: xsd:string, GitHubSettings: ns0:GitHubIntegrationSettings, PerforceBrowsingMode: ns0:CxWSPerforceBrowsingMode)
+     ns0:SourceFilterPatterns(ExcludeFilesPatterns: xsd:string, ExcludeFoldersPatterns: xsd:string)
+     ns0:SourceLocationType
+     ns0:SupportedLanguage(language: xsd:string, isSupported: xsd:boolean)
+     ns0:UserPermission(IsAllowedToDelete: xsd:boolean, IsAllowedToDuplicate: xsd:boolean, IsAllowedToRun: xsd:boolean, IsAllowedToUpdate: xsd:boolean)
+     xsd:ENTITIES
+     xsd:ENTITY
+     xsd:ID
+     xsd:IDREF
+     xsd:IDREFS
+     xsd:NCName
+     xsd:NMTOKEN
+     xsd:NMTOKENS
+     xsd:NOTATION
+     xsd:Name
+     xsd:QName
+     xsd:anySimpleType
+     xsd:anyURI
+     xsd:base64Binary
+     xsd:boolean
+     xsd:byte
+     xsd:date
+     xsd:dateTime
+     xsd:decimal
+     xsd:double
+     xsd:duration
+     xsd:float
+     xsd:gDay
+     xsd:gMonth
+     xsd:gMonthDay
+     xsd:gYear
+     xsd:gYearMonth
+     xsd:hexBinary
+     xsd:int
+     xsd:integer
+     xsd:language
+     xsd:long
+     xsd:negativeInteger
+     xsd:nonNegativeInteger
+     xsd:nonPositiveInteger
+     xsd:normalizedString
+     xsd:positiveInteger
+     xsd:short
+     xsd:string
+     xsd:time
+     xsd:token
+     xsd:unsignedByte
+     xsd:unsignedInt
+     xsd:unsignedLong
+     xsd:unsignedShort
+
+Bindings:
+     Soap11Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap
+     Soap12Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap12
+
+Service: CxJenkinsWebService
+     Port: CxJenkinsWebServiceSoap (Soap11Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap)
+         Operations:
+            BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string) -> BranchProjectByIdResult: ns0:CxWSResponseRunID
+            CancelScan(sessionId: xsd:string, runId: xsd:string) -> CancelScanResult: ns0:CxWSBasicRepsonse
+            CancelScanReport(sessionId: xsd:string, reportId: xsd:long) -> CancelScanReportResult: ns0:CxWSBasicRepsonse
+            CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> CreateAndRunProjectResult: ns0:CxWSResponseRunID
+            CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest) -> CreateScanReportResult: ns0:CxWSCreateReportResponse
+            GetAssociatedGroupsList(SessionID: xsd:string) -> GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList
+            GetConfigurationSetList(SessionID: xsd:string) -> GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList
+            GetPresetList(SessionID: xsd:string) -> GetPresetListResult: ns0:CxWSResponsePresetList
+            GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long) -> GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig
+            GetProjectsDisplayData(sessionID: xsd:string) -> GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData
+            GetScanReport(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportResult: ns0:CxWSResponseScanResults
+            GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportStatusResult: ns0:CxWSReportStatusResponse
+            GetScansStatuses(sessionID: xsd:string) -> GetScansStatusesResult: ns0:CxWSResponseScanStatusArray
+            GetServerLicenseData(sessionID: xsd:string) -> GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData
+            GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string) -> GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus
+            IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string) -> IsValidProjectNameResult: ns0:CxWSBasicRepsonse
+            Login(applicationCredentials: ns0:Credentials, lcid: xsd:int) -> LoginResult: ns0:CxWSResponseLoginData
+            RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunIncrementalScanResult: ns0:CxWSResponseRunID
+            RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunScanAndAddToProjectResult: ns0:CxWSResponseRunID
+            Scan(sessionId: xsd:string, args: ns0:CliScanArgs) -> ScanResult: ns0:CxWSResponseRunID
+
+     Port: CxJenkinsWebServiceSoap12 (Soap12Binding: {http://Checkmarx.com/v7}CxJenkinsWebServiceSoap12)
+         Operations:
+            BranchProjectById(sessionId: xsd:string, originProjectId: xsd:long, newBranchProjectName: xsd:string) -> BranchProjectByIdResult: ns0:CxWSResponseRunID
+            CancelScan(sessionId: xsd:string, runId: xsd:string) -> CancelScanResult: ns0:CxWSBasicRepsonse
+            CancelScanReport(sessionId: xsd:string, reportId: xsd:long) -> CancelScanReportResult: ns0:CxWSBasicRepsonse
+            CreateAndRunProject(SessionID: xsd:string, ProjectSettings: ns0:ProjectSettings, LocalCodeContainer: ns0:LocalCodeContainer, visibleToOtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> CreateAndRunProjectResult: ns0:CxWSResponseRunID
+            CreateScanReport(sessionID: xsd:string, reportRequest: ns0:CxWSReportRequest) -> CreateScanReportResult: ns0:CxWSCreateReportResponse
+            GetAssociatedGroupsList(SessionID: xsd:string) -> GetAssociatedGroupsListResult: ns0:CxWSResponseGroupList
+            GetConfigurationSetList(SessionID: xsd:string) -> GetConfigurationSetListResult: ns0:CxWSResponseConfigSetList
+            GetPresetList(SessionID: xsd:string) -> GetPresetListResult: ns0:CxWSResponsePresetList
+            GetProjectConfiguration(sessionID: xsd:string, projectID: xsd:long) -> GetProjectConfigurationResult: ns0:CxWSResponseProjectConfig
+            GetProjectsDisplayData(sessionID: xsd:string) -> GetProjectsDisplayDataResult: ns0:CxWSResponseProjectsDisplayData
+            GetScanReport(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportResult: ns0:CxWSResponseScanResults
+            GetScanReportStatus(SessionID: xsd:string, ReportID: xsd:long) -> GetScanReportStatusResult: ns0:CxWSReportStatusResponse
+            GetScansStatuses(sessionID: xsd:string) -> GetScansStatusesResult: ns0:CxWSResponseScanStatusArray
+            GetServerLicenseData(sessionID: xsd:string) -> GetServerLicenseDataResult: ns0:CxWSResponseServerLicenseData
+            GetStatusOfSingleScan(sessionID: xsd:string, runId: xsd:string) -> GetStatusOfSingleScanResult: ns0:CxWSResponseScanStatus
+            IsValidProjectName(SessionID: xsd:string, ProjectName: xsd:string, GroupId: xsd:string) -> IsValidProjectNameResult: ns0:CxWSBasicRepsonse
+            Login(applicationCredentials: ns0:Credentials, lcid: xsd:int) -> LoginResult: ns0:CxWSResponseLoginData
+            RunIncrementalScan(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunIncrementalScanResult: ns0:CxWSResponseRunID
+            RunScanAndAddToProject(sessionId: xsd:string, projectSettings: ns0:ProjectSettings, localCodeContainer: ns0:LocalCodeContainer, visibleToUtherUsers: xsd:boolean, isPublicScan: xsd:boolean, comment: xsd:string) -> RunScanAndAddToProjectResult: ns0:CxWSResponseRunID
+            Scan(sessionId: xsd:string, args: ns0:CliScanArgs) -> ScanResult: ns0:CxWSResponseRunID
+

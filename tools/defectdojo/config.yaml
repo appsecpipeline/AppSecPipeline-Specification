@@ -6,7 +6,7 @@ defectdojo:
     - "Report Consumer"
   type: "collector"
   description: "DefectDojo is a security program and vulnerability management tool. DefectDojo allows you to manage your application security program, maintain product and application information, schedule scans, triage vulnerabilities and push findings into defect trackers. Consolidate your findings into one source of truth with DefectDojo."
-  docker: "appsecpipeline/base-tools:1.0"
+  docker: "appsecpipeline/base-tools:1.6"
   url: https://github.com/OWASP/django-DefectDojo
   documentation: http://defectdojo.readthedocs.io/en/latest/
   parameters:
@@ -22,6 +22,34 @@ defectdojo:
       type: runtime
       data_type: string
       description: "Build ID from upstream CI/CD."
+    MASTER_CONFIG:
+      type: runtime
+      data_type: string
+      description: "Optional yaml configuration for DefectDojo."
+    PROFILE:
+      type: runtime
+      data_type: string
+      description: "Profile that is run for a Pipeline, defined in master config."
+    GIT_TAGS:
+      type: runtime
+      data_type: string
+      description: "Tag or branch of SCM."
+    DOJO_SLACK_WEB_HOOK:
+      type: config
+      data_type: key
+      description: "Slack Dojo API key."
+    DOJO_SLACK_CHANNEL:
+      type: config
+      data_type: key
+      description: "Slack Dojo channel"
+    DOJO_SLACK_USER:
+      type: config
+      data_type: string
+      description: "Slack Dojo user"
+    DOJO_SLACK_ICON:
+      type: config
+      data_type: string
+      description: "Slack Dojo icon"
     DOJO_API_KEY:
       type: config
       data_type: key
@@ -47,7 +75,7 @@ defectdojo:
     reportname:
     junit:
   profiles:
-    all: "--build_id=$BUILD_ID --closeengagement"
+    all: "--build_id=$BUILD_ID --tag=$GIT_TAGS --slack_web_hook=$DOJO_SLACK_WEB_HOOK --slack_channel=$DOJO_SLACK_CHANNEL --slack_user=$DOJO_SLACK_USER --slack_icon=$DOJO_SLACK_ICON --master_config=$MASTER_CONFIG --profile=$PROFILE --closeengagement"
     close_engagement: "--engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
     engagement: "--engagement=$DOJO_ENGAGEMENT_ID"
     all_proxy: "--proxy=$DOJO_PROXY --build_id=$BUILD_ID"

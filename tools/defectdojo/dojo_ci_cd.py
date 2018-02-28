@@ -11,10 +11,206 @@ import argparse
 import time
 import junit_xml_output
 import shutil
+from urlparse import urlparse
+import yaml
 
 DEBUG = True
 
 test_cases = []
+
+import json
+import requests
+
+class Notify(object):
+    """AppSecPipeline."""
+
+    def __init__(self, slack_web_hook, channel, username, icon_emoji):
+        self.slack_web_hook = slack_web_hook
+        self.channel = channel
+        self.username = username
+        self.icon_emoji = icon_emoji
+
+    def slackAlert(self, **kwargs):
+        payload_json = json.dumps(kwargs)
+        webhook_url = "https://hooks.slack.com/services/%s" % self.slack_web_hook
+        try:
+            response = requests.post(
+                webhook_url, data=payload_json,
+                headers={'Content-Type': 'application/json'}
+            )
+        except:
+            print "Slack timeout..."
+
+    def chatAlert(self, text, attachment):
+        self.slackAlert(text=text, channel=self.channel, username=self.username, icon_emoji=self.icon_emoji, attachments=attachment)
+
+    def chatPipelineStart(self, pipelineLaunchUID, source, pipelineTarget, profile):
+        slackTxt = "Security Pipeline Scan *%s* using profile: *%s* \n*PipelineLaunch UID:* %s\n*Details*: %s\n" % (source, profile, pipelineLaunchUID, pipelineTarget)
+        self.chatAlert("*Starting:* " + slackTxt)
+
+    def chatPipelineTools(self, pipeline):
+        self.chatAlert("*Tools that will be run:* ")
+        appSecPipeline = ""
+        toolName = None
+        for tool in pipeline:
+            toolData =  pipeline[tool]
+            toolName = toolData['tool']
+            appSecPipeline += toolName + ", "
+
+        self.chatAlert(">>>*AppSecPipeline:* " + appSecPipeline[:-2])
+
+        return toolName
+
+    def chatPipelineIndividualTools(self, execute, toolName):
+        text = "Executing"
+        if execute == False:
+            text = "Skipping"
+        self.chatAlert(">>>*" + text + ":* " + toolName)
+
+    def chatPipelineToolComplete(self, toolName):
+        self.chatAlert(">>>*Completed Execution:* " + toolName)
+
+    def chatPipelineComplete(self, pipelineLaunchUID):
+        self.chatAlert("*Completed Pipeline Scan for PipelineLaunch UID:* " + pipelineLaunchUID)
+
+    def chatPipelineMention(self, mention, text):
+        self.chatAlert("*Attention Needed*: %s %s" % (mention, text))
+
+    def scanSummary(self, build_report_link, open_report_link, product, status, comments, build, tag, summary):
+        title = None
+        color = None
+        if status == "pass":
+            title = "Security Scan Passed!"
+            color = "good"
+        elif status == "warning":
+            title = "Security Scan Passed with Warnings!"
+            color = "warning"
+        elif status == "fail":
+            title = "Security Scan Failed!"
+            color = "danger"
+
+        notification = [{
+                "title": title,
+                "color": color,
+                "footer": comments,
+                #"title_link": report_link,
+                "actions": [
+                {
+                  "type": "button",
+                  "text": "Build Findings",
+                  "url": build_report_link
+                },
+                {
+                  "type": "button",
+                  "text": "All Open Findings",
+                  "url": open_report_link
+                }
+                ],
+                "fields": [
+                {
+                    "title": "Critical",
+                    "value": summary["critical"],
+                    "short": 'true'
+                },
+                {
+                    "title": "High",
+                    "value": summary["high"],
+                    "short": 'true'
+                },
+                {
+                    "title": "Medium",
+                    "value": summary["medium"],
+                    "short": 'true'
+                },
+                {
+                    "title": "Low",
+                    "value": summary["low"],
+                    "short": 'true'
+                },
+                {
+                    "title": "Total",
+                    "value": summary["total"],
+                    "short": 'true'
+                }],
+            }]
+
+        if build is not None:
+            build = "Build #" + build + " "
+        else:
+            build = ""
+
+        if tag is not None:
+            tag = "Tag: " + tag
+        else:
+            tag = ""
+
+        self.chatAlert("*Completed Security Scan for: %s, %s%s* " % (product, build, tag), notification)
+
+class Config(object):
+    """AppSecPipeline."""
+
+    def __init__(self, masterYaml):
+        self.masterYaml = masterYaml
+        print masterYaml
+
+    def getMasterConfig(self):
+        yamlData = None
+        if self.masterYaml is not None and os.path.exists(self.masterYaml):
+            with open(self.masterYaml, 'r') as stream:
+                try:
+                    yamlData = yaml.safe_load(stream)
+                except yaml.YAMLError as exc:
+                    print(exc)
+        return yamlData
+
+    def getMasterToolMinimumVuln(self, tool_name, profile):
+        min_severity = None
+        masterYaml = self.getMasterConfig()
+
+        if masterYaml:
+            if profile in masterYaml["profiles"]:
+                for tool in masterYaml["profiles"][profile]["pipeline"]:
+                    if tool_name == tool["tool"]:
+                        if "min-severity" in tool:
+                            min_severity = tool["min-severity"]
+                            break
+
+            if min_severity == None:
+                #Lookup global minimum configuration for importing findings
+                if masterYaml:
+                    if "min-severity" in masterYaml["global"]:
+                        min_severity = masterYaml["global"]["min-severity"]
+
+        if min_severity == None:
+            min_severity = "Info"
+        elif min_severity.lower() == "info":
+            min_severity = "Info"
+        elif min_severity.lower() == "low":
+            min_severity = "Low"
+        elif min_severity.lower() == "medium":
+            min_severity = "Medium"
+        elif min_severity.lower() == "high":
+            min_severity = "High"
+        elif min_severity.lower() == "critical":
+            min_severity = "Critical"
+
+        return min_severity
+
+    def getMasterToolFailValues(self):
+        masterYaml = self.getMasterConfig()
+        max_critical = 1
+        max_high = 2
+        max_medium = 8
+
+        if masterYaml:
+            if "max-critical" in masterYaml["global"]:
+                max_critical = masterYaml["global"]["max-critical"]
+            if "max-high" in masterYaml["global"]:
+                max_high = masterYaml["global"]["max-high"]
+            if "max-medium" in masterYaml["global"]:
+                max_medium = masterYaml["global"]["max-medium"]
+
+        return max_critical, max_high, max_medium
 
 def junit(toolName, file):
 
@@ -66,7 +262,7 @@ def return_engagement(dd, product_id, user, build_id=None):
 
     return engagement_id
 
-def process_findings(dd, engagement_id, dir, build=None):
+def process_findings(dd, engagement_id, dir, build=None, tags=None, masterYaml=None, profile=None):
     test_ids = []
     for root, dirs, files in os.walk(dir):
         for name in files:
@@ -74,7 +270,7 @@ def process_findings(dd, engagement_id, dir, build=None):
             if "processed" not in str(file) and "error" not in str(file):
                 #Test for file extension
                 if file.lower().endswith(('.json', '.csv','.txt','.js', '.xml')):
-                    test_id = processFiles(dd, engagement_id, file)
+                    test_id = processFiles(dd, engagement_id, file, tags=tags, masterYaml=masterYaml, profile=profile)
 
                     if test_id is not None:
                         if str(test_id).isdigit():
@@ -105,7 +301,7 @@ def moveFile(file, success):
 
     shutil.move(file, dest)
 
-def processFiles(dd, engagement_id, file, scanner=None, build=None):
+def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, masterYaml=None, profile=None):
     upload_scan = None
     scannerName = None
     path=os.path.dirname(file)
@@ -168,29 +364,91 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None):
 
         if scannerName is not None:
             print "Uploading " + scannerName + " scan: " + file
-            test_id = dd.upload_scan(engagement_id, scannerName, file, "true", dojoDate, build)
+            config = Config(masterYaml)
+            minimum_severity = config.getMasterToolMinimumVuln(tool, profile)
+            test_id = dd.upload_scan(engagement_id, scannerName, file, "true", dojoDate, build=build, tags=tags, minimum_severity=minimum_severity)
             if test_id.success == False:
                 print "An error occured while uploading the scan: " + test_id.message
                 moveFile(file, False)
             else:
                 print "Succesful upload, TestID: " + str(test_id)
-                moveFile(file, True)
+                #moveFile(file, True)
 
     return test_id
 
-def create_findings(dd, engagement_id, scanner, file, build=None):
-    # Upload the scanner export
-    if engagement_id > 0:
-        print "Uploading scanner data."
-        date = datetime.now()
+def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_ids, build_id, tags, max_critical, max_high, max_medium):
 
-        upload_scan = dd.upload_scan(engagement_id, scanner, file, "true", date.strftime("%Y-%m-%d"), build=build)
+    config = Config(masterYaml)
+    max_critical, max_high, max_medium = config.getMasterToolFailValues()
 
-        if upload_scan.success:
-            test_id = upload_scan.id()
+    summary = {}
+    summary["critical"] = 0
+    summary["high"] = 0
+    summary["medium"] = 0
+    summary["low"] = 0
+    summary["total"] = 0
+
+    #Ensure tests found for this scan
+    if test_ids is not "":
+
+        findings = dd.list_findings(test_id_in=test_ids, duplicate="false", limit=1000)
+
+        if findings.success:
+            if findings.count() > 0:
+                for finding in findings.data["objects"]:
+                    test_cases.append(junit_xml_output.TestCase(finding["title"] + " Severity: " + finding["severity"], finding["description"],"failure"))
+                #if not os.path.exists("reports"):
+                #    os.mkdir("reports")
+                #junit("DefectDojo", "reports/junit_dojo.xml")
+
+            print"\n=============================================="
+            print "Total Number of New Findings: " + str(findings.data["meta"]["total_count"])
+            print"=============================================="
+
+            for finding in findings.data["objects"]:
+                if finding["severity"] == "Critical":
+                    summary["critical"]  = summary["critical"]  + 1
+                if finding["severity"] == "High":
+                    summary["high"] = summary["high"] + 1
+                if finding["severity"] == "Medium":
+                    summary["medium"] = summary["medium"] + 1
+                if finding["severity"] == "Low":
+                    summary["low"] = summary["low"] + 1
+                summary["total"] = summary["total"] + 1
+
+            strFail = ""
+            comments = None
+            if max_critical is not None:
+                if summary["critical"] >= max_critical:
+                    comments =  "Build Failed: Max Critical "
+            if max_high is not None:
+                if summary["high"] >= max_high:
+                    comments = comments +  " Max High "
+            if max_medium is not None:
+                if summary["medium"] >= max_medium:
+                    comments = comments +  " Max Medium "
+            if comments is None:
+                print "Build Passed!"
+                strFail = "pass"
+            else:
+                print "Build Failed: " + comments
+                strFail = "fail"
         else:
-            print upload_scan.message
-            quit()
+            print "An error occurred: " + findings.message
+    else:
+        strFail = "pass"
+
+    comments = "*Profile:* %s\n*Build Pass/Fail Criteria:* Max Critical: %s, Max High: %s, Max Medium: %s" % (profile, max_critical, max_high, max_medium)
+
+    defectdojo_url = urlparse(dd.host)
+    build_report_link = "%s://%s/engagement/%s" % (defectdojo_url.scheme, defectdojo_url.netloc, engagement_id)
+    open_report_link = "%s://%s/finding/open?test__engagement__product=%s" % (defectdojo_url.scheme, defectdojo_url.netloc, product)
+    product_name = None
+    product  = dd.get_product(product)
+    if product.success:
+        product = product.data['name']
+
+    notify.scanSummary(build_report_link, open_report_link, product, strFail, comments, build_id, tags, summary)
 
 def summary(dd, engagement_id, test_ids, max_critical=0, max_high=0, max_medium=0):
         findings = dd.list_findings(engagement_id_in=engagement_id, duplicate="false", active="true", verified="true")
@@ -244,7 +502,7 @@ def summary(dd, engagement_id, test_ids, max_critical=0, max_high=0, max_medium=
             strFail = None
             if max_critical is not None:
                 if sum_new_findings[4] > max_critical:
-                    strFail =  "Build Failed: Max Critical"
+                    strFail =  "Build Failed: Max Critical: (" + str(max_critical) + ")"
             if max_high is not None:
                 if sum_new_findings[3] > max_high:
                     strFail = strFail +  " Max High"
@@ -298,6 +556,13 @@ class Main:
         parser.add_argument('--high', help="Maximum new high vulns to pass the build.", required=False)
         parser.add_argument('--medium', help="Maximum new medium vulns to pass the build.", required=False)
         parser.add_argument('--proxy', help="Proxy, specify as host:port, ex: localhost:8080")
+        parser.add_argument('--tag', help="Tag the test with the branch or arbitrary tag.", required=False)
+        parser.add_argument('--slack_web_hook', help="Slack webhook token.", required=False)
+        parser.add_argument('--slack_channel', help="Slack channel", required=False)
+        parser.add_argument('--slack_user', help="Slack user.", required=False)
+        parser.add_argument('--slack_icon', help="Slack icon.", required=False)
+        parser.add_argument('--master_config', help="Master yaml configuration file.", required=False)
+        parser.add_argument('--profile', help="Profile run from master yaml.", required=False)
 
         #Parse arguments
         args = vars(parser.parse_args())
@@ -315,6 +580,13 @@ class Main:
         max_medium = args["medium"]
         build_id = args["build_id"]
         proxy = args["proxy"]
+        tag = args["tag"]
+        slack_web_hook = args["slack_web_hook"]
+        slack_channel = args["slack_channel"]
+        slack_user = args["slack_user"]
+        slack_icon = args["slack_icon"]
+        master_config = args["master_config"]
+        profile = args["profile"]
 
         if dir is not None or file is not None:
             if ":" not in api_key:
@@ -329,16 +601,19 @@ class Main:
             test_ids = None
             if file is not None:
                 if scanner is not None:
-                    test_ids = processFiles(dd, engagement_id, file, scanner=scanner)
+                    test_ids = processFiles(dd, engagement_id, file, scanner=scanner, tags=tag, masterYaml=master_config, profile=profile)
                 else:
                     print "Scanner type must be specified for a file import. --scanner"
             else:
-                test_ids = process_findings(dd, engagement_id, dir, build_id)
+                test_ids = process_findings(dd, engagement_id, dir, build=build_id, tags=tag, masterYaml=master_config, profile=profile)
 
             #Close the engagement
             if closeEngagement == True:
                 dd.close_engagement(engagement_id)
 
-            summary(dd, engagement_id, test_ids, max_critical, max_high, max_medium)
+            if slack_web_hook:
+                notify = Notify(slack_web_hook, slack_channel, slack_user, slack_icon)
+                summary_slack(dd, master_config, notify, profile, product_id, engagement_id, test_ids, build_id, tag, max_critical, max_high, max_medium)
+
         else:
             print "No file or directory to scan specified."

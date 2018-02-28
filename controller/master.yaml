@@ -2,10 +2,13 @@ version: AppSecPipeline 0.6.0
 
 # Global configuration settings
 global:
-  min-severity: low
-  max-tool-run: 720 #Maximum time to run a tool before terminating the container, specified in minutes
-  max-parallel: 3 #Maximum number of concurrent docker containers to run per Pipeline
-  max-dynamic: 1 #Maximum number of dynamic containers to run at once
+  min-severity: info
+  max-tool-run: 720   #Maximum time to run a tool before terminating the container, specified in minutes
+  max-parallel: 3     #Maximum number of concurrent docker containers to run per Pipeline
+  max-dynamic: 1      #Maximum number of dynamic containers to run at once
+  max-critical: 1     #Maximum critical findings before failing a build
+  max-high: 2         #Maximum high findings before failing a build
+  max-medium: 20      #Maximum medium findings before failing a build
 
 #Profile definition of what tools to run for a particular application
 profiles:
@@ -13,6 +16,7 @@ profiles:
     pipeline:
       - tool: "checkmarx"
         tool-profile: "all"
+        min-severity: "high"
       - tool: "bandit"
         tool-profile: "tuned"
       - tool: "brakeman"
