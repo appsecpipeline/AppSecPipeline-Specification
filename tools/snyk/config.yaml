@@ -4,7 +4,7 @@ snyk:
     - "Static Code Analyzer"
   type: "static"
   description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
-  docker: "appsecpipeline/node:1.1"
+  docker: "appsecpipeline/node:1.2"
   url: https://snyk.io/
   documentation: https://snyk.io/docs/
   parameters:
@@ -26,8 +26,14 @@ snyk:
     junit:
   languages:
     - "ruby"
-    - "nodejs"
+    - "javascript"
     - "java"
     - "python"
+    - "scala"
+    - "php"
+    - "c#"
+    - "f#"
+    - "php"
+    - "go"
   profiles:
-    all: "test ."
+    all: "test $LOC"
