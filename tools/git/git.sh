@@ -8,5 +8,5 @@ cd $dest
 
 if [ $action = "tag" ]; then
   git fetch --all
-  git checkout $3
+  git checkout $4
 fi
