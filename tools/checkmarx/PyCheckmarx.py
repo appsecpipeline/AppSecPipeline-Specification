@@ -102,8 +102,7 @@ class PyCheckmarx(object):
 			#proxy_settings = dict(http='http://localhost:8081')
 			#clientSDK = Client(serviceUrl + "?wsdl", cache=NoCache(), timeout=1200, proxy=proxy_settings)
 			clientSDK = Client(serviceUrl + "?wsdl", timeout=1200, cache=NoCache())
-			print serviceUrl
-			exit()
+
 			CxLogin = clientSDK.factory.create("Credentials")
 			CxLogin.User = self.USERNAME
 			CxLogin.Pass = self.PASSWORD
