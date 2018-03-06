@@ -115,8 +115,8 @@ profiles:
       - tool: "ssllabs"
         tool-profile: "all"
     final:
-      - tool: nikto
-        tool-profile: tuned
+      - tool: defectdojo
+        tool-profile: all
 
   defectdojonmap:
     pipeline:

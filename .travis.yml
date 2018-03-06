@@ -32,7 +32,7 @@ env:
     - PIPELINE_BUILD=zap
       DOCKER_FILE='base/dockerfile-zap'
       REPO='appsecpipeline/zap'
-      DOCKER_VESION='1.0'
+      DOCKER_VESION='1.1'
 
 script:
   - |

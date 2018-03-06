@@ -76,7 +76,7 @@ class Notify(object):
     def chatPipelineMention(self, mention, text):
         self.chatAlert("*Attention Needed*: %s %s" % (mention, text))
 
-    def scanSummary(self, build_report_link, open_report_link, product, status, comments, build, tag, summary):
+    def scanSummary(self, build_report_link, open_report_link, product, status, comments, build, repo_url, tag, summary):
         title = None
         color = None
         if status == "pass":
@@ -128,6 +128,11 @@ class Notify(object):
                     "short": 'true'
                 },
                 {
+                    "title": "Info",
+                    "value": summary["info"],
+                    "short": 'true'
+                },
+                {
                     "title": "Total",
                     "value": summary["total"],
                     "short": 'true'
@@ -135,16 +140,21 @@ class Notify(object):
             }]
 
         if build is not None:
-            build = "Build #" + build + " "
+            build = "Build #" + build + "\n"
         else:
             build = ""
 
+        if repo_url is not None:
+            repo_url = "Repo: " + repo_url + "\n"
+        else:
+            repo_url = ""
+
         if tag is not None:
-            tag = "Tag: " + tag
+            tag = "Tag: " + tag + "\n"
         else:
             tag = ""
 
-        self.chatAlert("*Completed Security Scan for: %s, %s%s* " % (product, build, tag), notification)
+        self.chatAlert("*Completed Security Scan for:* %s\n %s%s%s " % (product, build, repo_url, tag), notification)
 
 class Config(object):
     """AppSecPipeline."""
@@ -317,7 +327,7 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
     if "generic" in name:
         scanner = "Generic Findings Import"
         print "Uploading " + tool + " scan: " + file
-        test_id = dd.upload_scan(engagement_id, scanner, file, "true", dojoDate, build)
+        test_id = dd.upload_scan(engagement_id, scanner, file, "true", dojoDate, build=build, tags=tags, minimum_severity=minimum_severity)
         if test_id.success == False:
             print "An error occured while uploading the scan: " + test_id.message
             moveFile(file, False)
@@ -372,11 +382,11 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
                 moveFile(file, False)
             else:
                 print "Succesful upload, TestID: " + str(test_id)
-                #moveFile(file, True)
+                moveFile(file, True)
 
     return test_id
 
-def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_ids, build_id, tags, max_critical, max_high, max_medium):
+def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_ids, build_id, repo_url, tags, max_critical, max_high, max_medium):
 
     config = Config(masterYaml)
     max_critical, max_high, max_medium = config.getMasterToolFailValues()
@@ -386,6 +396,7 @@ def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_
     summary["high"] = 0
     summary["medium"] = 0
     summary["low"] = 0
+    summary["info"] = 0
     summary["total"] = 0
 
     #Ensure tests found for this scan
@@ -414,6 +425,8 @@ def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_
                     summary["medium"] = summary["medium"] + 1
                 if finding["severity"] == "Low":
                     summary["low"] = summary["low"] + 1
+                if finding["severity"] == "Info":
+                    summary["info"] = summary["info"] + 1
                 summary["total"] = summary["total"] + 1
 
             strFail = ""
@@ -448,7 +461,7 @@ def summary_slack(dd, masterYaml, notify, profile, product, engagement_id, test_
     if product.success:
         product = product.data['name']
 
-    notify.scanSummary(build_report_link, open_report_link, product, strFail, comments, build_id, tags, summary)
+    notify.scanSummary(build_report_link, open_report_link, product, strFail, comments, build_id, repo_url, tags, summary)
 
 def summary(dd, engagement_id, test_ids, max_critical=0, max_high=0, max_medium=0):
         findings = dd.list_findings(engagement_id_in=engagement_id, duplicate="false", active="true", verified="true")
@@ -557,12 +570,14 @@ class Main:
         parser.add_argument('--medium', help="Maximum new medium vulns to pass the build.", required=False)
         parser.add_argument('--proxy', help="Proxy, specify as host:port, ex: localhost:8080")
         parser.add_argument('--tag', help="Tag the test with the branch or arbitrary tag.", required=False)
+        parser.add_argument('--repo_url', help="Repo URL.", required=False)
         parser.add_argument('--slack_web_hook', help="Slack webhook token.", required=False)
         parser.add_argument('--slack_channel', help="Slack channel", required=False)
         parser.add_argument('--slack_user', help="Slack user.", required=False)
         parser.add_argument('--slack_icon', help="Slack icon.", required=False)
         parser.add_argument('--master_config', help="Master yaml configuration file.", required=False)
         parser.add_argument('--profile', help="Profile run from master yaml.", required=False)
+
 
         #Parse arguments
         args = vars(parser.parse_args())
@@ -581,6 +596,7 @@ class Main:
         build_id = args["build_id"]
         proxy = args["proxy"]
         tag = args["tag"]
+        repo_url = args["repo_url"]
         slack_web_hook = args["slack_web_hook"]
         slack_channel = args["slack_channel"]
         slack_user = args["slack_user"]
@@ -613,7 +629,7 @@ class Main:
 
             if slack_web_hook:
                 notify = Notify(slack_web_hook, slack_channel, slack_user, slack_icon)
-                summary_slack(dd, master_config, notify, profile, product_id, engagement_id, test_ids, build_id, tag, max_critical, max_high, max_medium)
+                summary_slack(dd, master_config, notify, profile, product_id, engagement_id, test_ids, build_id, repo_url, tag, max_critical, max_high, max_medium)
 
         else:
             print "No file or directory to scan specified."
