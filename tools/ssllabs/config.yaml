@@ -9,7 +9,7 @@ ssllabs:
   description: "This tool is a command-line client for the SSL Labs APIs, designed for automated and/or bulk testing."
   url: https://github.com/ssllabs/ssllabs-scan
   documentation: https://sourceforge.net/p/ssllabs/mailman/ssllabs-devel/
-  docker: "appsecpipeline/base-tools:1.0"
+  docker: "appsecpipeline/base-tools:1.3"
   parameters:
     URL:
       type: runtime

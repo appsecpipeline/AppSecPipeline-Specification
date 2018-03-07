@@ -8,7 +8,7 @@ tenableio:
   description: "Cloud-based Cyber Exposure platform for modern assets - from IT to cloud to IoT and OT."
   url: https://www.tenable.com/products/tenable-io
   documentation: https://docs.tenable.com/TenableIO.htm
-  docker: "appsecpipeline/base-tools:1.0"
+  docker: "appsecpipeline/base-tools:1.3"
   parameters:
     TARGET:
       type: runtime

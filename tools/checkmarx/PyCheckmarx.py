@@ -199,15 +199,17 @@ class PyCheckmarx(object):
 		tempZip = "/tmp/" + str(uuid.uuid4()) + ".zip"
 
 		file_paths = self.get_directory(directory)
+		print "Zipping"
 		with ZipFile(tempZip,'w') as zip:
 			for file in file_paths:
-				filename, file_extension = os.path.splitext(file)
-				try:
-					#Skip image files and static stuff
-					if file_extension != ".png" and file_extension != ".jpg" and file_extension != ".gif" and file_extension != ".ttf" and file_extension != ".bin" and file_extension != ".exe" and file_extension != ".so" and file_extension != ".jar" and file_extension != ".pdf":
-						zip.write(file)
-				except:
-					print "File skipped: " + file
+				if ".git" not in file:
+					filename, file_extension = os.path.splitext(file)
+					try:
+						#Skip image files and static stuff
+						if file_extension != ".png" and file_extension != ".jpg" and file_extension != ".gif" and file_extension != ".ttf" and file_extension != ".bin" and file_extension != ".exe" and file_extension != ".so" and file_extension != ".jar" and file_extension != ".pdf":
+							zip.write(file)
+					except:
+						print "File skipped: " + file
 
 		srcCode = open(tempZip, 'rb')
 
