@@ -206,7 +206,7 @@ class PyCheckmarx(object):
 					filename, file_extension = os.path.splitext(file)
 					try:
 						#Skip image files and static stuff
-						if file_extension != ".png" and file_extension != ".jpg" and file_extension != ".gif" and file_extension != ".ttf" and file_extension != ".bin" and file_extension != ".exe" and file_extension != ".so" and file_extension != ".jar" and file_extension != ".pdf":
+						if file_extension != ".a" and file_extension != ".framework" and file_extension != ".png" and file_extension != ".jpg" and file_extension != ".gif" and file_extension != ".ttf" and file_extension != ".bin" and file_extension != ".exe" and file_extension != ".so" and file_extension != ".jar" and file_extension != ".pdf":
 							zip.write(file)
 					except:
 						print "File skipped: " + file

@@ -8,7 +8,7 @@ cloc:
   description: "cloc counts blank lines, comment lines, and physical lines of source code in many programming languages."
   url: https://github.com/AlDanial/cloc
   documentation: https://github.com/AlDanial/cloc
-  docker: "appsecpipeline/base-tools:1.8"
+  docker: "appsecpipeline/base-tools:1.8.1"
   parameters:
     LOC:
       type: runtime
