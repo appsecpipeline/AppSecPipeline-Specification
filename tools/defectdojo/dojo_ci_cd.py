@@ -323,6 +323,9 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
     date = datetime.now()
     dojoDate = date.strftime("%Y-%m-%d")
 
+    config = Config(masterYaml)
+    minimum_severity = config.getMasterToolMinimumVuln(tool, profile)
+    
     #Tools without an importer in Dojo; attempted to import as generic
     if "generic" in name:
         scanner = "Generic Findings Import"
@@ -374,8 +377,6 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
 
         if scannerName is not None:
             print "Uploading " + scannerName + " scan: " + file
-            config = Config(masterYaml)
-            minimum_severity = config.getMasterToolMinimumVuln(tool, profile)
             test_id = dd.upload_scan(engagement_id, scannerName, file, "true", dojoDate, build=build, tags=tags, minimum_severity=minimum_severity)
             if test_id.success == False:
                 print "An error occured while uploading the scan: " + test_id.message
