@@ -24,7 +24,7 @@ env:
     - PIPELINE_BUILD=node
       DOCKER_FILE='base/dockerfile-node'
       REPO='appsecpipeline/node'
-      DOCKER_VESION='1.2'
+      DOCKER_VESION='1.3.0'
     - PIPELINE_BUILD=ruby
       DOCKER_FILE='base/dockerfile-ruby'
       REPO='appsecpipeline/ruby'

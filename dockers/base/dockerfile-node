@@ -31,6 +31,9 @@ RUN rm /tmp/setupdocker.sh
 ########## Retire.js Install ##########
 RUN npm install -g retire
 
+########## wappalyzer Install ##########
+RUN npm install -g wappalyzer
+
 ########## Install Synk Install ##########
 RUN npm install -g snyk
 

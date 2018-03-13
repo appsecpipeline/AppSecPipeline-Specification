@@ -578,7 +578,7 @@ retirejs:
     - "Components with known Vulnerabilities"
   type: "static"
   description: "There is a plethora of JavaScript libraries for use on the Web and in Node.JS apps out there. This greatly simplifies development,but we need to stay up-to-date on security fixes. Using 'Components with Known Vulnerabilities' is now a part of the OWASP Top 10 list of security risks and insecure libraries can pose a huge risk to your Web app. The goal of Retire.js is to help you detect the use of JS-library versions with known vulnerabilities."
-  docker: "appsecpipeline/node:1.2"
+  docker: "appsecpipeline/node:1.3.0"
   url: https://retirejs.github.io/retire.js/
   documentation: https://github.com/RetireJS/retire.js
   parameters:
@@ -606,7 +606,7 @@ snyk:
     - "Static Code Analyzer"
   type: "static"
   description: "Snyk continuously monitors your application's dependencies and lets you quickly respond when new vulnerabilities are disclosed."
-  docker: "appsecpipeline/node:1.2"
+  docker: "appsecpipeline/node:1.3.0"
   url: https://snyk.io/
   documentation: https://snyk.io/docs/
   parameters:
@@ -736,6 +736,33 @@ tenableio:
     shell: False
     report: "--report {reportname}"
     reportname: "{timestamp}.xml"
+    post:
+    junit:
+  profiles:
+    all: " "
+wappalyzer:
+  version: AppSecPipeline 0.5.0
+  tags:
+    - "Dyanmic Scanner"
+  type: "dynamic"
+  scan_type: "web"
+  icon-sm:
+  icon-lg:
+  description: "Wappalyzer is a cross-platform utility that uncovers the technologies used on websites. It detects content management systems, eCommerce platforms, web servers, JavaScript frameworks, analytics tools and many more."
+  url: https://www.wappalyzer.com/
+  documentation: https://github.com/AliasIO/Wappalyzer
+  docker: "appsecpipeline/node:1.3.0"
+  parameters:
+    URL:
+      type: runtime
+      data_type: url
+      description: "URL of the site to scan."
+  commands:
+    pre:
+    exec: "cd /usr/local/lib/node_modules/wappalyzer && node index.js $URL"
+    shell: True
+    report: "> {reportname}"
+    reportname: "{timestamp}.json"
     post:
     junit:
   profiles:
