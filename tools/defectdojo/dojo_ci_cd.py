@@ -14,7 +14,7 @@ import shutil
 from urlparse import urlparse
 import yaml
 
-DEBUG = True
+DEBUG = False
 
 test_cases = []
 
@@ -236,13 +236,24 @@ def dojo_connection(host, api_key, user, proxy=None):
           'http': 'http://' + proxy,
           'https': 'http://' + proxy,
         }
-        print proxy
         # Instantiate the DefectDojo api wrapper
         dd = defectdojo.DefectDojoAPI(host, api_key, user, proxies=proxies, verify_ssl=False, timeout=360, debug=True)
     else:
         dd = defectdojo.DefectDojoAPI(host, api_key, user, verify_ssl=False, timeout=360, debug=False)
 
     return dd
+
+def get_user(dd):
+    users = dd.list_users(dd.user)
+
+    if users.success == False:
+        print "Error in listing users: " + users.message
+        print "Exiting...\n"
+        sys.exit()
+    else:
+        user_id = users.data["objects"][0]["id"]
+
+    return user_id
 
 def return_engagement(dd, product_id, user, build_id=None):
     engagement_id = None
@@ -252,14 +263,7 @@ def return_engagement(dd, product_id, user, build_id=None):
     start_date = datetime.now()
     end_date = start_date+timedelta(days=1)
 
-    users = dd.list_users(user)
-
-    if users.success == False:
-        print "Error in listing users: " + users.message
-        print "Exiting...\n"
-        sys.exit()
-    else:
-        user_id = users.data["objects"][0]["id"]
+    user_id = get_user(dd)
 
     engagementText = "CI/CD Integration"
     if build_id is not None:
@@ -272,7 +276,7 @@ def return_engagement(dd, product_id, user, build_id=None):
 
     return engagement_id
 
-def process_findings(dd, engagement_id, dir, build=None, tags=None, masterYaml=None, profile=None):
+def process_findings(dd, engagement_id, dir, build=None, tags=None, masterYaml=None, profile=None, product=None):
     test_ids = []
     for root, dirs, files in os.walk(dir):
         for name in files:
@@ -280,7 +284,7 @@ def process_findings(dd, engagement_id, dir, build=None, tags=None, masterYaml=N
             if "processed" not in str(file) and "error" not in str(file):
                 #Test for file extension
                 if file.lower().endswith(('.json', '.csv','.txt','.js', '.xml')):
-                    test_id = processFiles(dd, engagement_id, file, tags=tags, masterYaml=masterYaml, profile=profile)
+                    test_id = processFiles(dd, engagement_id, file, tags=tags, masterYaml=masterYaml, profile=profile, product=product)
 
                     if test_id is not None:
                         if str(test_id).isdigit():
@@ -311,7 +315,39 @@ def moveFile(file, success):
 
     shutil.move(file, dest)
 
-def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, masterYaml=None, profile=None):
+def processCloc(dd, product_id, file):
+    user_id = get_user(dd)
+    #remove the langauges for the product
+    dd.delete_all_languages_product(product_id)
+
+    data = json.load(open(file))
+
+    for language in data:
+        if "header" not in language and "SUM" not in language:
+            files   = data[language]['nFiles']
+            code    = data[language]['code']
+            blank   = data[language]['blank']
+            comment = data[language]['comment']
+
+            #create the language for the product
+            dd.create_language(product_id, user_id, files, code, blank, comment, language_name=language)
+
+def processWappalyzer(dd, product_id, file):
+    user_id = get_user(dd)
+    #remove the app analysis for the product
+    dd.delete_all_app_analysis_product(product_id)
+
+    data = json.load(open(file))
+    for app in data["applications"]:
+        name = app["name"]
+        confidence = app["confidence"]
+        version = app["version"]
+        icon = app["icon"]
+        website = app["website"]
+
+        dd.create_app_analysis(product_id, user_id, name, confidence, version, icon, website)
+
+def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, masterYaml=None, profile=None, product=None):
     upload_scan = None
     scannerName = None
     path=os.path.dirname(file)
@@ -325,7 +361,7 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
 
     config = Config(masterYaml)
     minimum_severity = config.getMasterToolMinimumVuln(tool, profile)
-    
+
     #Tools without an importer in Dojo; attempted to import as generic
     if "generic" in name:
         scanner = "Generic Findings Import"
@@ -372,6 +408,10 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
             scannerName = "OpenVAS CSV"
         elif tool == "snyk":
             scannerName = "Snyk Scan"
+        elif tool == "cloc":
+            processCloc(dd, product, file)
+        elif tool == "wappalyzer":
+            processWappalyzer(dd, product, file)
         else:
             print "Tool not defined in dojo_ci_cd script: " + tool
 
@@ -618,11 +658,11 @@ class Main:
             test_ids = None
             if file is not None:
                 if scanner is not None:
-                    test_ids = processFiles(dd, engagement_id, file, scanner=scanner, tags=tag, masterYaml=master_config, profile=profile)
+                    test_ids = processFiles(dd, engagement_id, file, scanner=scanner, tags=tag, masterYaml=master_config, profile=profile, product=product_id)
                 else:
                     print "Scanner type must be specified for a file import. --scanner"
             else:
-                test_ids = process_findings(dd, engagement_id, dir, build=build_id, tags=tag, masterYaml=master_config, profile=profile)
+                test_ids = process_findings(dd, engagement_id, dir, build=build_id, tags=tag, masterYaml=master_config, profile=profile, product=product_id)
 
             #Close the engagement
             if closeEngagement == True:

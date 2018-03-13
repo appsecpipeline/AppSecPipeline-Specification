@@ -10,7 +10,7 @@ arachni:
   description: "Arachni is a feature-full, modular, high-performance Ruby framework aimed towards helping penetration testers and administrators evaluate the security of modern web applications."
   url: http://www.arachni-scanner.com/
   documentation: https://github.com/Arachni/arachni/wiki/Command-line-user-interface
-  docker: "appsecpipeline/base-tools:1.8.1"
+  docker: "appsecpipeline/base-tools:1.8.3"
   parameters:
     URL:
       type: runtime
