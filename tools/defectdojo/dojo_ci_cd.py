@@ -646,9 +646,6 @@ class Main:
         master_config = args["master_config"]
         profile = args["profile"]
 
-        if engagement_id is None:
-            engagement_id = return_engagement(dd, product_id, user, build_id=build_id)
-
         if dir is not None or file is not None:
             if ":" not in api_key:
                 print "API Key not in the correct format, must be: <user>:<guid>"
@@ -657,6 +654,9 @@ class Main:
             user = apiParsed[0]
             api_key = apiParsed[1]
             dd = dojo_connection(host, api_key, user, proxy)
+            
+            if engagement_id is None:
+                engagement_id = return_engagement(dd, product_id, user, build_id=build_id)
 
             test_ids = None
             if file is not None:
