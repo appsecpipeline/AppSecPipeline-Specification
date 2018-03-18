@@ -169,15 +169,15 @@ profiles:
   debug-test:
     startup:
       - tool: "cloc"
-        options: "all"
+        tool-profile: "all"
       - tool: "git"
-        options: "clone"
+        tool-profile: "clone"
     pipeline:
       - tool: "bandit"
-        options: "all"
+        tool-profile: "all"
     final:
       - tool: defectdojo
-        options: close_engagement
+        tool-profile: close_engagement
 
 #Define which profile to run based off of a code checkin
 deployment:
