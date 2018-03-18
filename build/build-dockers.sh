@@ -4,8 +4,8 @@ docker rmi $(docker images | grep "none" | awk '/ / { print $3 }')
 #docker rmi $(docker images -q)
 echo "Building dockers"
 #--no-cache
-docker build -f dockers/base/dockerfile-base . -t appsecpipeline/base:1.3
-docker build -f dockers/base/dockerfile-base-tools . -t appsecpipeline/base-tools:1.8
+docker build -f dockers/base/dockerfile-base . -t appsecpipeline/base:1.4
+docker build -f dockers/base/dockerfile-base-tools . -t appsecpipeline/base-tools:1.7
 docker build -f dockers/base/dockerfile-sast . -t appsecpipeline/sast:1.0
 docker build -f dockers/base/dockerfile-node . -t appsecpipeline/node:1.1
 docker build -f dockers/base/dockerfile-ruby . -t appsecpipeline/ruby:1.0

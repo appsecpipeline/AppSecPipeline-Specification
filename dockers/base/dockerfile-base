@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-# ASPTAG = appsecpipeline/base:1.2
+# ASPTAG = appsecpipeline/base:1.4
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -23,6 +23,9 @@ COPY dockers/base/setupdocker.sh /tmp
 ENV PATH="/usr/bin/appsecpipeline/tools:${PATH}"
 RUN sh /tmp/setupdocker.sh
 RUN rm /tmp/setupdocker.sh
+
+########## Change to appsecpipeline user ##########
+USER appsecpipeline
 
 ENTRYPOINT ["launch.py"]
 

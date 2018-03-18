@@ -4,7 +4,7 @@ git:
     - "Utility"
   type: "utility"
   description: "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency."
-  docker: "appsecpipeline/base:1.3"
+  docker: "appsecpipeline/base:1.4"
   url: https://git-scm.com/
   documentation: https://git-scm.com/docs/git
   parameters:
