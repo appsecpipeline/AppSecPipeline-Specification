@@ -70,8 +70,8 @@ profiles:
       - tool: prepenv
         tool-profile: all
     runevery:
-      tool: defectdojo
-      tool-profile: engagement
+      - tool: defectdojo
+        tool-profile: engagement
     final:
       - tool: defectdojo
         tool-profile: close_engagement
