@@ -120,7 +120,7 @@ bandit:
     - "Static Code Analyzer"
   type: "static"
   description: "Bandit is a tool designed to find common security issues in Python code. To do this Bandit processes each file, builds an AST from it, and runs appropriate plugins against the AST nodes. Once Bandit has finished scanning all the files it generates a report."
-  docker: "appsecpipeline/base-tools:1.8.3"
+  docker: "appsecpipeline/base-tools:1.8.5"
   url: https://wiki.openstack.org/wiki/Security/Projects/Bandit
   documentation: https://docs.openstack.org/bandit/latest/index.html
   parameters:
@@ -132,10 +132,10 @@ bandit:
     pre:
     exec: "bandit"
     shell: True
-    report: "-f csv -o {reportname}"
-    reportname: "{timestamp}.csv"
-    post: "python /usr/bin/appsecpipeline/tools/bandit/parser.py -f {reportname}"
-    junit: "junit.py -f {reportname} -t bandit"
+    report: "-f json -o {reportname}"
+    reportname: "{timestamp}.json"
+    post:
+    junit:
   languages:
     - "python"
   profiles:
@@ -281,7 +281,7 @@ defectdojo:
     - "Report Consumer"
   type: "collector"
   description: "DefectDojo is a security program and vulnerability management tool. DefectDojo allows you to manage your application security program, maintain product and application information, schedule scans, triage vulnerabilities and push findings into defect trackers. Consolidate your findings into one source of truth with DefectDojo."
-  docker: "appsecpipeline/base-tools:1.8.4"
+  docker: "appsecpipeline/base-tools:1.8.5"
   url: https://github.com/OWASP/django-DefectDojo
   documentation: http://defectdojo.readthedocs.io/en/latest/
   parameters:
@@ -354,9 +354,10 @@ defectdojo:
     reportname:
     junit:
   profiles:
-    all: "--build_id=$BUILD_ID --tag=$GIT_TAGS --slack_web_hook=$DOJO_SLACK_WEB_HOOK --slack_channel=$DOJO_SLACK_CHANNEL --slack_user=$DOJO_SLACK_USER --slack_icon=$DOJO_SLACK_ICON --master_config=$MASTER_CONFIG --profile=$PROFILE --repo_url=$GIT_URL --closeengagement"
+    all: "--build_id=$BUILD_ID --tag=$GIT_TAGS --slack_web_hook=$DOJO_SLACK_WEB_HOOK --slack_channel=$DOJO_SLACK_CHANNEL --slack_user=$DOJO_SLACK_USER --slack_icon=$DOJO_SLACK_ICON --master_config=$MASTER_CONFIG --profile=$PROFILE --repo_url=$GIT_URL --engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
     close_engagement: "--engagement=$DOJO_ENGAGEMENT_ID --closeengagement"
     engagement: "--engagement=$DOJO_ENGAGEMENT_ID"
+    auto_engagement: "--closeengagement"
     all_proxy: "--proxy=$DOJO_PROXY --build_id=$BUILD_ID"
 dependency-check:
   version: AppSecPipeline 0.5.0
@@ -678,7 +679,7 @@ ssllabs:
   description: "This tool is a command-line client for the SSL Labs APIs, designed for automated and/or bulk testing."
   url: https://github.com/ssllabs/ssllabs-scan
   documentation: https://sourceforge.net/p/ssllabs/mailman/ssllabs-devel/
-  docker: "appsecpipeline/base-tools:1.8.3"
+  docker: "appsecpipeline/base-tools:1.8.5"
   parameters:
     URL:
       type: runtime
@@ -690,7 +691,7 @@ ssllabs:
     shell: True
     report: "> {reportname}"
     reportname: "{timestamp}.json"
-    post: "python /usr/bin/appsecpipeline/tools/ssllabs/parser.py -f '{reportname}'"
+    post:
     junit:
   credentials:
     simple:

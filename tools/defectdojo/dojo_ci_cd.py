@@ -413,6 +413,10 @@ def processFiles(dd, engagement_id, file, scanner=None, build=None, tags=None, m
             processCloc(dd, product, file)
         elif tool == "wappalyzer":
             processWappalyzer(dd, product, file)
+        elif tool == "bandit":
+            scannerName = "Bandit Scan"
+        elif tool == "ssllabs":
+            scannerName = "SSL Labs Scan"
         else:
             print "Tool not defined in dojo_ci_cd script: " + tool
 
@@ -654,7 +658,7 @@ class Main:
             user = apiParsed[0]
             api_key = apiParsed[1]
             dd = dojo_connection(host, api_key, user, proxy)
-            
+
             if engagement_id is None:
                 engagement_id = return_engagement(dd, product_id, user, build_id=build_id)
 
@@ -669,7 +673,14 @@ class Main:
 
             #Close the engagement
             if closeEngagement == True:
-                dd.close_engagement(engagement_id)
+                #Validate that there isn't a manual review Requested
+                results = dd.list_tests(engagement_in=engagement_id)
+                if results.success:
+                    for test_type in results.data["objects"]:
+                        if test_type["test_type"] == "Manual Code Review":
+                            closeEngagement = False
+                if closeEngagement:
+                    dd.close_engagement(engagement_id)
 
             if slack_web_hook:
                 notify = Notify(slack_web_hook, slack_channel, slack_user, slack_icon)
